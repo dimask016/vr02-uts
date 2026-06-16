@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimerManager.cs – Penjelasan Kode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            padding: 2rem 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #21262d;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #58a6ff, #f0883e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .meta {
+            color: #8b949e;
+            font-size: 0.9rem;
+            background: #161b22;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #30363d;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            background: #161b22;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            min-width: 700px;
+        }
+
+        thead {
+            background: #0d1117;
+            border-bottom: 2px solid #30363d;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 0.9rem 1.2rem;
+            font-weight: 600;
+            color: #f0f6fc;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        thead th:first-child { width: 30%; }
+        thead th:nth-child(2) { width: 20%; }
+        thead th:last-child { width: 50%; }
+
+        tbody tr {
+            border-bottom: 1px solid #21262d;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #1c2128;
+        }
+
+        tbody td {
+            padding: 0.9rem 1.2rem;
+            vertical-align: top;
+        }
+
+        .code-snip {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.82rem;
+            background: #0d1117;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            color: #c9d1d9;
+            display: inline-block;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .func-name {
+            font-weight: 600;
+            color: #f0883e;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .desc {
+            color: #c9d1d9;
+            font-size: 0.92rem;
+        }
+
+        .desc strong {
+            color: #f0f6fc;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            background: #1f3a5f;
+            color: #58a6ff;
+            margin-right: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-timer { background: #2d1f3a; color: #d2a8ff; }
+
+        .footer {
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #21262d;
+            color: #8b949e;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            thead th, tbody td { padding: 0.6rem 0.8rem; }
+            .code-snip { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>⏱ TimerManager.cs</h1>
+        <span class="meta">⏱ Timer Core · Runtime · 47 baris</span>
+    </div>
+
+    <!-- RINGKASAN -->
+    <div style="background:#161b22; border:1px solid #30363d; border-radius:12px; padding:1.2rem 1.8rem; margin-bottom:1.8rem;">
+        <p style="color:#c9d1d9; font-size:1rem;">
+            <strong>Fungsi utama:</strong> Mengelola hitungan mundur (countdown timer) untuk evakuasi. 
+            Menampilkan waktu dalam format <strong>MM:SS</strong>, memicu event <code>OnTimerExpiredEvent</code> 
+            saat waktu habis, dan menyediakan metode untuk menghentikan atau mereset timer. 
+            Terintegrasi dengan <code>EvacuationManager</code> melalui event subscription untuk menangani kegagalan evakuasi.
+        </p>
+    </div>
+
+    <!-- TABEL PENJELASAN -->
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>📌 Baris Kode (cuplikan)</th>
+                    <th>🎯 Fungsi / Metode</th>
+                    <th>📖 Penjelasan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 1. Namespace -->
+                <tr>
+                    <td><span class="code-snip">using UnityEngine;<br>using TMPro;<br>using System;</span></td>
+                    <td><span class="func-name">Namespace</span></td>
+                    <td class="desc">Mengimpor namespace: <code>UnityEngine</code> untuk MonoBehaviour, <code>TMPro</code> untuk TextMeshPro, dan <code>System</code> untuk delegasi <code>Action</code> yang digunakan untuk event.</td>
+                </tr>
+
+                <!-- 2. Deklarasi kelas -->
+                <tr>
+                    <td><span class="code-snip">public class TimerManager : MonoBehaviour</span></td>
+                    <td><span class="func-name">Deklarasi Kelas</span></td>
+                    <td class="desc">Kelas turunan <code>MonoBehaviour</code> yang dapat dipasang sebagai komponen pada GameObject di scene (biasanya objek "TimerManager" yang dibuat oleh scene builder).</td>
+                </tr>
+
+                <!-- 3. Variabel publik -->
+                <tr>
+                    <td><span class="code-snip">public TextMeshProUGUI timerText;<br>public float maxTime = 120f;</span></td>
+                    <td><span class="func-name">Variabel Publik</span></td>
+                    <td class="desc">
+                        <strong>timerText</strong> – referensi ke komponen <code>TextMeshProUGUI</code> untuk menampilkan waktu (biasanya "TimerText" di UI).<br>
+                        <strong>maxTime</strong> – durasi maksimum timer dalam detik (bisa diatur di Inspector). Default 120 detik (2 menit).
+                    </td>
+                </tr>
+
+                <!-- 4. Variabel privat -->
+                <tr>
+                    <td><span class="code-snip">private float currentTime;<br>private bool isRunning = true;</span></td>
+                    <td><span class="func-name">Variabel Privat</span></td>
+                    <td class="desc">
+                        <strong>currentTime</strong> – menyimpan sisa waktu saat ini (di-update setiap frame).<br>
+                        <strong>isRunning</strong> – status apakah timer sedang berjalan (true) atau berhenti (false).
+                    </td>
+                </tr>
+
+                <!-- 5. Event Action -->
+                <tr>
+                    <td><span class="code-snip">public Action OnTimerExpiredEvent;</span></td>
+                    <td><span class="func-name">Event</span></td>
+                    <td class="desc">Delegasi <code>Action</code> yang akan dipanggil saat timer mencapai 0. <code>EvacuationManager</code> mendaftarkan metode <code>OnTimerExpired</code> ke event ini di <code>Start()</code> untuk menangani kegagalan evakuasi.</td>
+                </tr>
+
+                <!-- 6. Start() -->
+                <tr>
+                    <td><span class="code-snip">private void Start()<br>{<br>    currentTime = maxTime;<br>    UpdateTimerDisplay();<br>}</span></td>
+                    <td><span class="func-name">Start()</span></td>
+                    <td class="desc">Inisialisasi: set <code>currentTime</code> ke <code>maxTime</code>, lalu perbarui tampilan teks agar menunjukkan waktu awal (misal "02:00").</td>
+                </tr>
+
+                <!-- 7. Update() -->
+                <tr>
+                    <td><span class="code-snip">private void Update()<br>{<br>    if (!isRunning) return;<br>    currentTime -= Time.deltaTime;<br>    if (currentTime <= 0f)<br>    {<br>        currentTime = 0f;<br>        isRunning = false;<br>        OnTimerExpiredEvent?.Invoke();<br>        UpdateTimerDisplay();<br>    }<br>    else<br>    {<br>        UpdateTimerDisplay();<br>    }<br>}</span></td>
+                    <td><span class="func-name">Update()</span></td>
+                    <td class="desc">
+                        <strong>Logika timer:</strong>
+                        <br>1. Jika timer tidak berjalan (<code>!isRunning</code>), keluar dari metode.
+                        <br>2. Kurangi <code>currentTime</code> dengan <code>Time.deltaTime</code> setiap frame.
+                        <br>3. Jika waktu habis (<code>currentTime <= 0</code>):
+                        <br>&nbsp;&nbsp;- Set <code>currentTime = 0</code> (pastikan tidak negatif).
+                        <br>&nbsp;&nbsp;- Set <code>isRunning = false</code> (hentikan timer).
+                        <br>&nbsp;&nbsp;- Panggil <code>OnTimerExpiredEvent?.Invoke()</code> untuk memberi tahu subscriber.
+                        <br>&nbsp;&nbsp;- Perbarui tampilan.
+                        <br>4. Jika waktu masih tersisa, perbarui tampilan setiap frame.
+                    </td>
+                </tr>
+
+                <!-- 8. UpdateTimerDisplay() -->
+                <tr>
+                    <td><span class="code-snip">private void UpdateTimerDisplay()<br>{<br>    if (timerText == null) return;<br>    int minutes = Mathf.FloorToInt(currentTime / 60);<br>    int seconds = Mathf.FloorToInt(currentTime % 60);<br>    timerText.text = $"{minutes:00}:{seconds:00}";<br>}</span></td>
+                    <td><span class="func-name">UpdateTimerDisplay()</span></td>
+                    <td class="desc">
+                        <strong>Memperbarui tampilan:</strong>
+                        <br>1. Jika <code>timerText</code> null, keluar (aman).
+                        <br>2. Hitung menit dan detik dari <code>currentTime</code>.
+                        <br>3. Format teks menjadi "MM:SS" dengan dua digit (misal "02:00", "01:30", "00:05").
+                        <br>Dipanggil setiap frame dari <code>Update()</code> dan saat inisialisasi.
+                    </td>
+                </tr>
+
+                <!-- 9. StopTimer() -->
+                <tr>
+                    <td><span class="code-snip">public void StopTimer()<br>{<br>    isRunning = false;<br>}</span></td>
+                    <td><span class="func-name">StopTimer()</span></td>
+                    <td class="desc">Metode publik untuk menghentikan timer. Dipanggil oleh <code>EvacuationManager</code> saat evakuasi berhasil (<code>InteractExitStation()</code>) agar timer berhenti menghitung mundur.</td>
+                </tr>
+
+                <!-- 10. ResetTimer() -->
+                <tr>
+                    <td><span class="code-snip">public void ResetTimer()<br>{<br>    currentTime = maxTime;<br>    isRunning = true;<br>    UpdateTimerDisplay();<br>}</span></td>
+                    <td><span class="func-name">ResetTimer()</span></td>
+                    <td class="desc">Metode publik untuk mereset timer ke nilai awal (<code>maxTime</code>) dan menjalankannya kembali. Berguna untuk restart level atau permainan ulang.</td>
+                </tr>
+
+                <!-- 11. Catatan desain -->
+                <tr>
+                    <td><span class="code-snip">// Dipisah dari EvacuationManager untuk Single Responsibility</span></td>
+                    <td><span class="func-name">Desain</span></td>
+                    <td class="desc">TimerManager dipisah menjadi script terpisah (bukan bagian dari EvacuationManager) agar tanggung jawab lebih jelas (Single Responsibility Principle). EvacuationManager hanya menggunakan event <code>OnTimerExpiredEvent</code> untuk merespons.</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <span>📁 <strong>Path:</strong> Assets/Scripts/UTS_Dimas/TimerManager.cs</span>
+        <span>🧑‍💻 Bagian dari sistem evakuasi UTS · Dimas</span>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>📁 Dokumentasi Script – UTS_Dimas Evacuation</title>
+    <style>
+        /* ----- RESET & GLOBAL ----- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            padding: 2rem 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* ----- HEADER ----- */
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #21262d;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #58a6ff, #f0883e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .header .badge {
+            background: #21262d;
+            padding: 0.25rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #8b949e;
+            border: 1px solid #30363d;
+            margin-left: auto;
+        }
+
+        /* ----- ARCHITECTURE CARD ----- */
+        .arch-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .arch-card h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #f0f6fc;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .arch-card .folder-tree {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.95rem;
+            background: #0d1117;
+            padding: 1.25rem 1.75rem;
+            border-radius: 8px;
+            border-left: 4px solid #58a6ff;
+            color: #c9d1d9;
+            overflow-x: auto;
+            white-space: pre;
+            line-height: 1.8;
+        }
+
+        .arch-card .folder-tree .highlight {
+            color: #f0883e;
+        }
+
+        .arch-card .folder-tree .comment {
+            color: #8b949e;
+            font-style: italic;
+        }
+
+        /* ----- SCRIPT GRID ----- */
+        .script-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .script-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 1.5rem 1.5rem 1.75rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .script-card:hover {
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 2px rgba(88, 166, 255, 0.15);
+        }
+
+        .script-card .file-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .script-card .file-name {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #f0f6fc;
+            word-break: break-word;
+        }
+
+        .script-card .file-path {
+            font-size: 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            color: #8b949e;
+            background: #0d1117;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            border: 1px solid #21262d;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .script-card .file-type {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #58a6ff;
+            background: #0d1117;
+            padding: 0.15rem 0.7rem;
+            border-radius: 12px;
+            border: 1px solid #21262d;
+            display: inline-block;
+            margin-bottom: 0.6rem;
+        }
+
+        .script-card .desc {
+            color: #c9d1d9;
+            font-size: 0.95rem;
+            margin: 0.5rem 0 0.75rem;
+            flex: 1;
+        }
+
+        .script-card .func-list {
+            list-style: none;
+            padding: 0;
+            margin: 0.25rem 0 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .script-card .func-list li {
+            font-size: 0.88rem;
+            color: #8b949e;
+            display: flex;
+            align-items: baseline;
+            gap: 0.4rem;
+            padding: 0.2rem 0;
+            border-bottom: 1px solid #21262d;
+        }
+
+        .script-card .func-list li:last-child {
+            border-bottom: none;
+        }
+
+        .script-card .func-list .fn {
+            color: #f0883e;
+            font-weight: 500;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            flex-shrink: 0;
+        }
+
+        .script-card .func-list .fn-desc {
+            color: #c9d1d9;
+        }
+
+        .script-card .badge-role {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-top: 0.5rem;
+            align-self: flex-start;
+        }
+
+        .badge-editor {
+            background: #1f3a5f;
+            color: #58a6ff;
+        }
+
+        .badge-runtime {
+            background: #2d1f3a;
+            color: #d2a8ff;
+        }
+
+        .badge-ui {
+            background: #1f3a2d;
+            color: #7ee787;
+        }
+
+        .badge-core {
+            background: #3d2a1a;
+            color: #f0883e;
+        }
+
+        .badge-helper {
+            background: #2d2d2d;
+            color: #b1b1b1;
+        }
+
+        /* ----- FOOTER ----- */
+        .footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #21262d;
+            font-size: 0.9rem;
+            color: #8b949e;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .footer a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            .header .badge {
+                margin-left: 0;
+                width: 100%;
+                text-align: center;
+            }
+            .arch-card .folder-tree {
+                font-size: 0.8rem;
+                padding: 0.9rem 1rem;
+                white-space: pre-wrap;
+                word-break: break-all;
+            }
+            .script-grid {
+                grid-template-columns: 1fr;
+            }
+            .script-card .file-header {
+                flex-wrap: wrap;
+            }
+            .script-card .file-path {
+                white-space: normal;
+                word-break: break-all;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- ===== HEADER ===== -->
+        <div class="header">
+            <h1>📁 UTS_Dimas – Evacuation Scene</h1>
+            <span class="badge">📂 11 Scripts · Unity 2022+</span>
+        </div>
+
+        <!-- ===== ARSITEKTUR FOLDER ===== -->
+        <div class="arch-card">
+            <h2>📂 Struktur Folder / Path</h2>
+            <div class="folder-tree">
+                <span class="highlight">Assets/</span>
+                │
+                ├── <span class="highlight">Editor/</span>
+                │   └── EvacuationSceneBuilder.cs          <span class="comment"># Editor tool</span>
+                │
+                ├── <span class="highlight">Scenes/</span>
+                │   └── UTS_Dimas_EvacuationScene.unity     <span class="comment"># (di-generate otomatis)</span>
+                │
+                └── <span class="highlight">Scripts/</span>
+                    └── <span class="highlight">UTS_Dimas/</span>                     <span class="comment"># semua script runtime</span>
+                        │
+                        ├── EvacuationManager.cs           <span class="comment"># 🧠 logika utama</span>
+                        ├── TimerManager.cs                <span class="comment"># ⏱ timer & event</span>
+                        ├── DoorController.cs              <span class="comment"># 🚪 buka/tutup pintu</span>
+                        ├── SimpleFirstPersonController.cs <span class="comment"># 🎮 gerakan pemain FPS</span>
+                        ├── SpacebarClickHandler.cs        <span class="comment"># ⌨ klik tombol dengan Space</span>
+                        ├── ButtonClickEffect.cs           <span class="comment"># ✨ efek hover & press</span>
+                        ├── ButtonPulseEffect.cs           <span class="comment"># ✨ efek denyut (pulse)</span>
+                        ├── StationClickEffect.cs          <span class="comment"># ✨ efek visual stasiun</span>
+                        ├── WarningPopup.cs                <span class="comment"># ⚠ popup peringatan</span>
+                        └── EvacuationAutoConnector.cs     <span class="comment"># 🔌 auto-connect komponen</span>
+            </div>
+        </div>
+
+        <!-- ===== SCRIPT GRID ===== -->
+        <div style="margin: 2rem 0 0.5rem;">
+            <h2 style="font-size:1.4rem; font-weight:600;">📄 Penjelasan Fungsi per File</h2>
+            <p style="color:#8b949e; margin-top:0.25rem;">Klik pada kartu untuk melihat detail peran dan metode utama.</p>
+        </div>
+
+        <div class="script-grid">
+
+            <!-- 1. EvacuationSceneBuilder -->
+            <div class="script-card">
+                <div class="file-header">
+                    <span class="file-name">EvacuationSceneBuilder.cs</span>
+                    <span class="file-path">Assets/Editor/</span>
+                </div>
+                <span class="file-type badge-editor">⚙ Editor Tool</span>
+                <p class="desc">
+                    <strong>Fungsi:</strong> Membangun seluruh scene secara otomatis dari kode. Membuat lighting,
+                    dinding, stasiun, UI overlay, player, manager, dan tombol world-space.
+                </p>
+                <ul class="func-list">
+                    <li><span class="fn">BuildScene()</span> <span class="fn-desc">— Entry point menu <kbd>Tools → Build Evacuation Scene</kbd></span></li>
+                    <li><span class="fn">CreateWorldSpaceButton()</span> <span class="fn-desc">— Buat tombol 3D dengan Canvas World Space</span></li>
+                    <li><span class="fn">CreateStation()</span> <span class="fn-desc">— Buat stasiun interaktif dengan label</span></li>
+                    <li><span class="fn">CreateUIPanel()</span> <span class="fn-desc">— Buat panel UI overlay</span></li>
+                </ul>
+                <span class="badge-role badge-editor">🔧 Editor · Build-time</span>
+            </div>
+
+            <!-- 2. EvacuationManager -->
+            <div class="script-card">
+                <div class="file-header">
+                    <span class="file-name">EvacuationManager.cs</span>
+                    <span class="file-path">Assets/Scripts/UTS_Dimas/</span>
+                </div>
+                <span class="file-type badge-core">🧠 Core Logic</span>
+                <p class="desc">
+                    <strong>Fungsi:</strong> Otak utama permainan. Mengelola status evakuasi (ID card, alarm, pintu, exit),
+                    memperbarui UI checklist, minimap, feedback, dan menangani interaksi tombol.
+                </p>
+                <ul class="func-list">
+                    <li><span class="fn">InteractIDCardStation()</span> <span class="fn-desc">— Ambil kartu ID</span></li>
+                    <li><span class="fn">InteractAlarmStation()</span> <span class="fn-desc">— Aktifkan alarm</span></li>
+                    <li><span class="fn">InteractEmergencyDoorStation()</span> <span class="fn-desc">— Buka pintu darurat</span></li>
+                    <li><span class="fn">InteractExitStation()</span> <span class="fn-desc">— Selesaikan evakuasi</span></li>
+                    <li><span class="fn">UpdateChecklistUI() / UpdateMapUI()</span> <span class="fn-desc">— Perbarui tampilan</span></li>
+                    <li><span class="fn">ShowWarningPopup() / ShowSuccessFeedback()</span> <span class="fn-desc">— Notifikasi</span></li>
+                </ul>
+                <span class="badge-role badge-core">🎯 Runtime · Manager</span>
+            </div>
+
+            <!-- 3. TimerManager -->
+            <div class="script-card">
+                <div class="file-header">
+                    <span class="file-name">TimerManager.cs</span>
+                    <span class="file-path">Assets/Scripts/UTS_Dimas/</span>
+                </div>
+                <span class="file-type badge-core">⏱ Timer</span>
+                <p class="desc">
+                    <strong>Fungsi:</strong> Mengelola hitungan mundur 120 detik. Memicu event <code>OnTimerExpiredEvent</code>
+                    saat waktu habis, dan memperbarui tampilan teks timer.
+                </p>
+                <ul class="func-list">
+                    <li><span class="fn">Update()</span> <span class="fn-desc">— Kurangi waktu setiap frame</span></li>
+                    <li><span class="fn">StopTimer()</span> <span class="fn-desc">— Hentikan timer</span></li>
+                    <li><span class="fn">ResetTimer()</span> <span class="fn-desc">— Reset ke 120 detik</span></li>
+                    <li><span class="fn">OnTimerExpiredEvent</span> <span class="fn-desc">— Event untuk EvacuationManager</span></li>
+                </ul>
+                <span class="badge-role badge-core">⏳ Runtime · Timer</span>
+            </div>
+
+            <!-- 4. DoorController -->
+            <div class="script-card">
+                <div class="file-header">
+                    <span class="file-name">DoorController.cs</span>
+                    <span class="file-path">Assets/Scripts/UTS_Dimas/</span>
+                </div>
+                <span class="file-type badge-helper">🚪 Interaksi</span>
+                <p class="desc">
+                    <strong>Fungsi:</strong> Mengontrol pergerakan pintu. Saat dipanggil <code>OpenDoor()</code>,
+                    pintu bergeser ke posisi terbuka secara halus.
+                </p>
+                <ul class="func-list">
+                    <li><span class="fn">OpenDoor()</span> <span class="fn-desc">— Buka pintu (geser)</span></li>
+                    <li><span class="fn">CloseDoor()</span> <span class="fn-desc">— Tutup pintu</span></li>
+                    <li><span class="fn">IsOpen()</span> <span class="fn-desc">— Cek status pintu</span></li>
+                </ul>
+                <span class="badge-role badge-helper">🚪 Runtime · Pintu</span>
+            </div>
+
+            <!-- 5. SimpleFirstPersonController -->
+            <div class="script-card">
+                <div class="file-header">
+                    <span class="file-name">SimpleFirstPersonController.cs</span>
+                    <span class="file-path">Assets/Scripts/UTS_Dimas/</span>
+                </div>
+                <span class="file-type badge-core">🎮 Player</span>
+                <p class="desc">
+                    <strong>Fungsi:</strong> Mengontrol pergerakan pemain FPS. Menggunakan <code>CharacterController</code>
+                    untuk berjalan dan <code>Mouse</code> untuk melihat ke segala arah.
+                </p>
+                <ul class="func-list">
+                    <li><span class="fn">Update()</span> <span class="fn-desc">— Baca input mouse & keyboard, gerakkan player</span></li>
+                    <li><span class="fn">Start()</span> <span class="fn-desc">— Inisialisasi, lock cursor</span></li>
+                </ul>
+                <span class="badge-role badge-core">🎮 Runtime · Player</span>
+            </div>
+
+            <!-- 6. SpacebarClickHandler -->
+            <div class="script-card">
+                <div class="file-header">
+                    <span class="file-name">SpacebarClickHandler.cs</span>
+                    <span class="file-path">Assets/Scripts/UTS_Dimas/</span>
+                </div>
+                <span class="file-type badge-helper">⌨ Input</span>
+                <p class="desc">
+                    <strong>Fungsi:</strong> Menangkap input <kbd>Space</kbd> dan melakukan raycast ke UI di tengah layar.
+                    Jika menemukan tombol, maka tombol tersebut diklik secara virtual.
+                </p>
+                <ul class="func-list">
+                    <li><span class="fn">Update()</span> <span class="fn-desc">— Deteksi Space, raycast UI, invoke button</span></li>
+                </ul>
+                <span class="badge-role badge-helper">⌨ Runtime · Input</span>
+            </div>
+
+            <!-- 7. ButtonClickEffect -->
+            <div class="script-card">
+                <div class="file-header">
+                    <span class="file-name">ButtonClickEffect.cs</span>
+                    <span class="file-path">Assets/Scripts/UTS_Dimas/</span>
+                </div>
+                <span class="file-type badge-ui">✨ UI Effect</span>
+                <p class="desc">
+                    <strong>Fungsi:</strong> Memberikan efek visual pada tombol saat di-hover, ditekan, atau dilepas.
+                    Mengubah skala dan warna secara halus.
+                </p>
+                <ul class="func-list">
+                    <li><span class="fn">OnPointerEnter()</span> <span class="fn-desc">— Hover: skala membesar, warna terang</span></li>
+                    <li><span class="fn">OnPointerDown()</span> <span class="fn-desc">— Press: skala mengecil, warna gelap</span></li>
+                    <li><span class="fn">OnPointerUp() / OnPointerExit()</span> <span class="fn-desc">— Kembali ke normal</span></li>
+                </ul>
+                <span class="badge-role badge-ui">✨ Runtime · UI</span>
+            </div>
+
+            <!-- 8. ButtonPulseEffect -->
+            <div class="script-card">
+                <div class="file-header">
+                    <span class="file-name">ButtonPulseEffect.cs</span>
+                    <span class="file-path">Assets/Scripts/UTS_Dimas/</span>
+                </div>
+                <span class="file-type badge-ui">✨ UI Effect</span>
+                <p class="desc">
+                    <strong>Fungsi:</strong> Membuat tombol berdenyut (pulse) terus-menerus dengan skala naik-turun
+                    menggunakan <code>Mathf.PingPong</code>. Menarik perhatian pemain.
+                </p>
+                <ul class="func-list">
+                    <li><span class="fn">Pulse()</span> <span class="fn-desc">— Coroutine yang mengubah skala secara periodik</span></li>
+                </ul>
+                <span class="badge-role badge-ui">✨ Runtime · UI</span>
+            </div>
+
+            <!-- 9. StationClickEffect -->
+            <div class="script-card">
+                <div class="file-header">
+                    <span class="file-name">StationClickEffect.cs</span>
+                    <span class="file-path">Assets/Scripts/UTS_Dimas/</span>
+                </div>
+                <span class="file-type badge-ui">🎨 Visual</span>
+                <p class="desc">
+                    <strong>Fungsi:</strong> Mengatur efek visual stasiun (warna dan emisi). Digunakan oleh
+                    <code>EvacuationManager</code> untuk mengubah warna stasiun saat selesai.
+                </p>
+                <ul class="func-list">
+                    <li><span class="fn">SetColor(Color)</span> <span class="fn-desc">— Ubah warna material + emisi</span></li>
+                    <li><span class="fn">ResetColor()</span> <span class="fn-desc">— Kembalikan ke warna asli</span></li>
+                </ul>
+                <span class="badge-role badge-ui">🎨 Runtime · Visual</span>
+            </div>
+
+            <!-- 10. WarningPopup -->
+            <div class="script-card">
+                <div class="file-header">
+                    <span class="file-name">WarningPopup.cs</span>
+                    <span class="file-path">Assets/Scripts/UTS_Dimas/</span>
+                </div>
+                <span class="file-type badge-ui">⚠ Popup</span>
+                <p class="desc">
+                    <strong>Fungsi:</strong> Menampilkan popup peringatan atau sukses dengan efek fade in/out.
+                    Juga menampilkan flash merah untuk peringatan error.
+                </p>
+                <ul class="func-list">
+                    <li><span class="fn">ShowWarning(string)</span> <span class="fn-desc">— Tampilkan popup merah + flash</span></li>
+                    <li><span class="fn">ShowSuccess(string)</span> <span class="fn-desc">— Tampilkan popup hijau</span></li>
+                    <li><span class="fn">AnimatePopup()</span> <span class="fn-desc">— Coroutine fade in/out</span></li>
+                </ul>
+                <span class="badge-role badge-ui">⚠ Runtime · UI</span>
+            </div>
+
+            <!-- 11. EvacuationAutoConnector -->
+            <div class="script-card">
+                <div class="file-header">
+                    <span class="file-name">EvacuationAutoConnector.cs</span>
+                    <span class="file-path">Assets/Scripts/UTS_Dimas/</span>
+                </div>
+                <span class="file-type badge-helper">🔌 Auto-Connect</span>
+                <p class="desc">
+                    <strong>Fungsi:</strong> Berjalan di <em>Edit Mode</em> (<code>ExecuteAlways</code>) untuk
+                    secara otomatis menghubungkan referensi UI ke <code>EvacuationManager</code>.
+                    Memudahkan setup tanpa drag-drop manual.
+                </p>
+                <ul class="func-list">
+                    <li><span class="fn">ConnectComponents()</span> <span class="fn-desc">— Cari semua Text, Image, CanvasGroup dan assign ke manager</span></li>
+                </ul>
+                <span class="badge-role badge-helper">🔧 Edit-time · Helper</span>
+            </div>
+
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="footer">
+            <span>📌 <strong>Catatan:</strong> Semua script runtime berada di <code>Assets/Scripts/UTS_Dimas/</code>.
+            Scene dibangun dengan <code>EvacuationSceneBuilder</code> dari menu <kbd>Tools</kbd>.</span>
+            <span>🧑‍💻 Dibuat untuk UTS · Dimas</span>
+        </div>
+
+    </div>
+</body>
+</html>

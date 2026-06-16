@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimpleFirstPersonController.cs – Penjelasan Kode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            padding: 2rem 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #21262d;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #58a6ff, #f0883e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .meta {
+            color: #8b949e;
+            font-size: 0.9rem;
+            background: #161b22;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #30363d;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            background: #161b22;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            min-width: 700px;
+        }
+
+        thead {
+            background: #0d1117;
+            border-bottom: 2px solid #30363d;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 0.9rem 1.2rem;
+            font-weight: 600;
+            color: #f0f6fc;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        thead th:first-child { width: 30%; }
+        thead th:nth-child(2) { width: 20%; }
+        thead th:last-child { width: 50%; }
+
+        tbody tr {
+            border-bottom: 1px solid #21262d;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #1c2128;
+        }
+
+        tbody td {
+            padding: 0.9rem 1.2rem;
+            vertical-align: top;
+        }
+
+        .code-snip {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.82rem;
+            background: #0d1117;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            color: #c9d1d9;
+            display: inline-block;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .func-name {
+            font-weight: 600;
+            color: #f0883e;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .desc {
+            color: #c9d1d9;
+            font-size: 0.92rem;
+        }
+
+        .desc strong {
+            color: #f0f6fc;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            background: #1f3a5f;
+            color: #58a6ff;
+            margin-right: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-player { background: #2d1f3a; color: #d2a8ff; }
+
+        .footer {
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #21262d;
+            color: #8b949e;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            thead th, tbody td { padding: 0.6rem 0.8rem; }
+            .code-snip { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🎮 SimpleFirstPersonController.cs</h1>
+        <span class="meta">🎮 Player Controller · Runtime · 49 baris</span>
+    </div>
+
+    <!-- RINGKASAN -->
+    <div style="background:#161b22; border:1px solid #30363d; border-radius:12px; padding:1.2rem 1.8rem; margin-bottom:1.8rem;">
+        <p style="color:#c9d1d9; font-size:1rem;">
+            <strong>Fungsi utama:</strong> Mengontrol pergerakan pemain dalam mode First-Person Shooter (FPS).
+            Menggunakan <code>CharacterController</code> untuk bergerak dan input <code>Mouse</code> untuk rotasi kamera.
+            Mendukung berjalan (WASD), melihat (mouse), serta penguncian kursor untuk pengalaman FPS yang imersif.
+            Dirancang sederhana dan ringan, cocok untuk proyek skala kecil seperti simulasi evakuasi.
+        </p>
+    </div>
+
+    <!-- TABEL PENJELASAN -->
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>📌 Baris Kode (cuplikan)</th>
+                    <th>🎯 Fungsi / Metode</th>
+                    <th>📖 Penjelasan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 1. Deklarasi variabel publik -->
+                <tr>
+                    <td><span class="code-snip">public Transform playerCamera;<br>public CharacterController characterController;<br>public float walkSpeed = 5f;<br>public float mouseSensitivity = 2f;<br>private float verticalRotation = 0f;</span></td>
+                    <td><span class="func-name">Variabel</span></td>
+                    <td class="desc">
+                        <strong>playerCamera</strong> – referensi ke transform kamera (biasanya anak dari GameObject player).<br>
+                        <strong>characterController</strong> – komponen <code>CharacterController</code> untuk pergerakan fisik.<br>
+                        <strong>walkSpeed</strong> – kecepatan berjalan (dapat diatur di Inspector).<br>
+                        <strong>mouseSensitivity</strong> – sensitivitas mouse (semakin tinggi semakin cepat rotasi).<br>
+                        <strong>verticalRotation</strong> – menyimpan rotasi vertikal kamera (pitch) untuk di-clamp agar tidak over-rotate.
+                    </td>
+                </tr>
+
+                <!-- 2. Start() -->
+                <tr>
+                    <td><span class="code-snip">private void Start()<br>{<br>    if (characterController == null)<br>        characterController = GetComponent&lt;CharacterController&gt;();<br>    if (playerCamera == null && GetComponentInChildren&lt;Camera&gt;() != null)<br>        playerCamera = GetComponentInChildren&lt;Camera&gt;().transform;<br>    Cursor.lockState = CursorLockMode.Locked;<br>    Cursor.visible = false;<br>}</span></td>
+                    <td><span class="func-name">Start()</span></td>
+                    <td class="desc">
+                        Inisialisasi: 
+                        <br>1. Jika <code>characterController</code> belum di-set, cari komponen <code>CharacterController</code> pada GameObject yang sama.
+                        <br>2. Jika <code>playerCamera</code> belum di-set, cari komponen <code>Camera</code> di anak-anak objek dan ambil transform-nya.
+                        <br>3. Kunci kursor ke tengah layar (<code>CursorLockMode.Locked</code>) dan sembunyikan kursor untuk pengalaman FPS.
+                    </td>
+                </tr>
+
+                <!-- 3. Update() – Mouse look -->
+                <tr>
+                    <td><span class="code-snip">float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;<br>float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;<br><br>verticalRotation -= mouseY;<br>verticalRotation = Mathf.Clamp(verticalRotation, -90f, 90f);<br>playerCamera.localRotation = Quaternion.Euler(verticalRotation, 0f, 0f);<br>transform.Rotate(Vector3.up * mouseX);</span></td>
+                    <td><span class="func-name">Mouse Look</span></td>
+                    <td class="desc">
+                        <strong>Rotasi kamera:</strong> 
+                        <br>1. Baca input mouse horizontal (<code>Mouse X</code>) dan vertikal (<code>Mouse Y</code>), kalikan dengan sensitivitas.
+                        <br>2. Rotasi vertikal: kurangi <code>verticalRotation</code> dengan <code>mouseY</code> (karena gerakan mouse ke atas harus membuat kamera melihat ke bawah).
+                        <br>3. <code>Mathf.Clamp</code> membatasi sudut pitch antara -90° dan +90° agar pemain tidak bisa melihat ke belakang (ke arah bawah/atas ekstrem).
+                        <br>4. Terapkan rotasi vertikal ke <code>playerCamera.localRotation</code> (hanya sumbu X).
+                        <br>5. Rotasi horizontal: putar <code>transform</code> (body player) di sumbu Y sebesar <code>mouseX</code>.
+                    </td>
+                </tr>
+
+                <!-- 4. Update() – Movement -->
+                <tr>
+                    <td><span class="code-snip">float horizontal = Input.GetAxis("Horizontal");<br>float vertical = Input.GetAxis("Vertical");<br>Vector3 move = transform.right * horizontal + transform.forward * vertical;<br>move.Normalize();<br>characterController.Move(move * walkSpeed * Time.deltaTime);</span></td>
+                    <td><span class="func-name">Movement</span></td>
+                    <td class="desc">
+                        <strong>Pergerakan:</strong>
+                        <br>1. Baca input horizontal (A/D atau kiri/kanan) dan vertikal (W/S atau atas/bawah).
+                        <br>2. Hitung arah gerakan relatif terhadap rotasi player (<code>transform.right</code> dan <code>transform.forward</code>) agar gerakan selalu sesuai dengan arah hadap pemain.
+                        <br>3. <code>Normalize()</code> memastikan kecepatan diagonal tidak lebih cepat dari gerakan lurus (mencegah speed boost).
+                        <br>4. <code>characterController.Move</code> menggerakkan pemain dengan kecepatan <code>walkSpeed</code> dikalikan <code>Time.deltaTime</code>.
+                    </td>
+                </tr>
+
+                <!-- 5. OnApplicationFocus -->
+                <tr>
+                    <td><span class="code-snip">private void OnApplicationFocus(bool hasFocus)<br>{<br>    if (hasFocus)<br>    {<br>        Cursor.lockState = CursorLockMode.Locked;<br>        Cursor.visible = false;<br>    }<br>}</span></td>
+                    <td><span class="func-name">OnApplicationFocus()</span></td>
+                    <td class="desc">Dipanggil saat aplikasi mendapatkan atau kehilangan fokus (misalnya saat alt-tab). Jika aplikasi mendapatkan fokus kembali, kunci dan sembunyikan kursor agar pemain tidak kehilangan kontrol FPS.</td>
+                </tr>
+
+                <!-- 6. Catatan desain -->
+                <tr>
+                    <td><span class="code-snip">// Tidak ada gravitasi atau lompatan</span></td>
+                    <td><span class="func-name">Desain Minimalis</span></td>
+                    <td class="desc">Controller ini dirancang sederhana: tidak ada gravitasi, lompatan, atau crouch. Karakter bergerak bebas di bidang datar (seperti di dalam ruangan evakuasi). Cocok untuk simulasi sederhana tanpa kebutuhan fisika kompleks.</td>
+                </tr>
+
+                <!-- 7. Integrasi dengan sistem lain -->
+                <tr>
+                    <td><span class="code-snip">// Digunakan bersama SpacebarClickHandler</span></td>
+                    <td><span class="func-name">Integrasi</span></td>
+                    <td class="desc">Biasanya dipasang pada GameObject "Player" bersama dengan <code>CharacterController</code>. Kamera anak (MainCamera) juga memiliki <code>SpacebarClickHandler</code> untuk menangkap klik tombol dengan tombol Space.</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <span>📁 <strong>Path:</strong> Assets/Scripts/UTS_Dimas/SimpleFirstPersonController.cs</span>
+        <span>🧑‍💻 Bagian dari sistem evakuasi UTS · Dimas</span>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ButtonClickEffect.cs – Penjelasan Kode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            padding: 2rem 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #21262d;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #58a6ff, #f0883e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .meta {
+            color: #8b949e;
+            font-size: 0.9rem;
+            background: #161b22;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #30363d;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            background: #161b22;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            min-width: 700px;
+        }
+
+        thead {
+            background: #0d1117;
+            border-bottom: 2px solid #30363d;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 0.9rem 1.2rem;
+            font-weight: 600;
+            color: #f0f6fc;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        thead th:first-child { width: 30%; }
+        thead th:nth-child(2) { width: 20%; }
+        thead th:last-child { width: 50%; }
+
+        tbody tr {
+            border-bottom: 1px solid #21262d;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #1c2128;
+        }
+
+        tbody td {
+            padding: 0.9rem 1.2rem;
+            vertical-align: top;
+        }
+
+        .code-snip {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.82rem;
+            background: #0d1117;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            color: #c9d1d9;
+            display: inline-block;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .func-name {
+            font-weight: 600;
+            color: #f0883e;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .desc {
+            color: #c9d1d9;
+            font-size: 0.92rem;
+        }
+
+        .desc strong {
+            color: #f0f6fc;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            background: #1f3a5f;
+            color: #58a6ff;
+            margin-right: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-ui { background: #1f3a2d; color: #7ee787; }
+
+        .footer {
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #21262d;
+            color: #8b949e;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            thead th, tbody td { padding: 0.6rem 0.8rem; }
+            .code-snip { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>✨ ButtonClickEffect.cs</h1>
+        <span class="meta">🎨 UI Effect · Runtime · 54 baris</span>
+    </div>
+
+    <!-- RINGKASAN -->
+    <div style="background:#161b22; border:1px solid #30363d; border-radius:12px; padding:1.2rem 1.8rem; margin-bottom:1.8rem;">
+        <p style="color:#c9d1d9; font-size:1rem;">
+            <strong>Fungsi utama:</strong> Memberikan efek visual interaktif pada tombol UI (berbasis <code>Image</code>)
+            saat kursor di-hover, ditekan, atau dilepas. Mengubah skala dan warna secara halus menggunakan 
+            <code>Vector3.Lerp</code> dan <code>Color.Lerp</code> dengan durasi yang dapat diatur.
+        </p>
+    </div>
+
+    <!-- TABEL PENJELASAN -->
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>📌 Baris Kode (cuplikan)</th>
+                    <th>🎯 Fungsi / Metode</th>
+                    <th>📖 Penjelasan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 1. Deklarasi kelas & antarmuka -->
+                <tr>
+                    <td><span class="code-snip">public class ButtonClickEffect : MonoBehaviour,<br>IPointerEnterHandler, IPointerExitHandler,<br>IPointerDownHandler, IPointerUpHandler</span></td>
+                    <td><span class="func-name">Deklarasi Kelas</span></td>
+                    <td class="desc">Mewarisi <code>MonoBehaviour</code> dan mengimplementasikan empat antarmuka <code>IPointer…</code> untuk menangkap event pointer dari sistem UI Unity.</td>
+                </tr>
+
+                <!-- 2. Public fields (pengaturan) -->
+                <tr>
+                    <td><span class="code-snip">public float hoverScale = 1.1f;<br>public float pressScale = 0.95f;<br>public float duration = 0.1f;<br>public Color hoverColor = new Color(0.4f, 0.8f, 1f);<br>public Color pressColor = new Color(0.1f, 0.4f, 0.7f);</span></td>
+                    <td><span class="func-name">Parameter Efek</span></td>
+                    <td class="desc">Nilai yang dapat diatur di Inspector: <strong>hoverScale</strong> (skala saat kursor di atas), <strong>pressScale</strong> (skala saat ditekan), <strong>duration</strong> (kecepatan transisi), dan warna untuk status hover/press.</td>
+                </tr>
+
+                <!-- 3. Private variables -->
+                <tr>
+                    <td><span class="code-snip">private Image image;<br>private Vector3 originalScale;<br>private Color originalColor;<br>private bool isHovering = false;<br>private bool isPressed = false;</span></td>
+                    <td><span class="func-name">Variabel Internal</span></td>
+                    <td class="desc">Menyimpan referensi komponen <code>Image</code>, skala dan warna awal tombol, serta status boolean untuk mengetahui apakah sedang di-hover atau ditekan.</td>
+                </tr>
+
+                <!-- 4. Start() -->
+                <tr>
+                    <td><span class="code-snip">void Start()<br>{<br>    image = GetComponent&lt;Image&gt;();<br>    originalScale = transform.localScale;<br>    if (image != null) originalColor = image.color;<br>}</span></td>
+                    <td><span class="func-name">Start()</span></td>
+                    <td class="desc">Inisialisasi: mengambil komponen <code>Image</code> dari GameObject, menyimpan skala asli dan warna asli (jika ada) untuk digunakan sebagai basis perhitungan efek.</td>
+                </tr>
+
+                <!-- 5. Update() -->
+                <tr>
+                    <td><span class="code-snip">void Update()<br>{<br>    Vector3 targetScale = originalScale;<br>    if (isPressed) targetScale = originalScale * pressScale;<br>    else if (isHovering) targetScale = originalScale * hoverScale;<br>    transform.localScale = Vector3.Lerp(transform.localScale, targetScale, Time.deltaTime / duration);<br>    …<br>}</span></td>
+                    <td><span class="func-name">Update()</span></td>
+                    <td class="desc">Setiap frame, tentukan skala target berdasarkan status (press > hover > normal). Kemudian lerp skala dan warna menuju target dengan kecepatan yang ditentukan <code>duration</code>.</td>
+                </tr>
+
+                <!-- 6. Update bagian warna -->
+                <tr>
+                    <td><span class="code-snip">if (image != null)<br>{<br>    Color targetColor = originalColor;<br>    if (isPressed) targetColor = pressColor;<br>    else if (isHovering) targetColor = hoverColor;<br>    image.color = Color.Lerp(image.color, targetColor, Time.deltaTime / duration);<br>}</span></td>
+                    <td><span class="func-name">Update() – Warna</span></td>
+                    <td class="desc">Bagian dari <code>Update</code> yang menangani perubahan warna tombol. Sama seperti skala, warna juga di-lerp menuju target (pressColor, hoverColor, atau originalColor).</td>
+                </tr>
+
+                <!-- 7. OnPointerEnter -->
+                <tr>
+                    <td><span class="code-snip">public void OnPointerEnter(PointerEventData eventData)<br>{<br>    isHovering = true;<br>}</span></td>
+                    <td><span class="func-name">OnPointerEnter()</span></td>
+                    <td class="desc">Dipanggil saat pointer (kursor) memasuki area tombol. Mengatur <code>isHovering = true</code> sehingga <code>Update</code> akan menerapkan efek hover.</td>
+                </tr>
+
+                <!-- 8. OnPointerExit -->
+                <tr>
+                    <td><span class="code-snip">public void OnPointerExit(PointerEventData eventData)<br>{<br>    isHovering = false;<br>}</span></td>
+                    <td><span class="func-name">OnPointerExit()</span></td>
+                    <td class="desc">Dipanggil saat pointer keluar dari area tombol. Mengatur <code>isHovering = false</code> sehingga tombol kembali ke skala dan warna normal.</td>
+                </tr>
+
+                <!-- 9. OnPointerDown -->
+                <tr>
+                    <td><span class="code-snip">public void OnPointerDown(PointerEventData eventData)<br>{<br>    isPressed = true;<br>}</span></td>
+                    <td><span class="func-name">OnPointerDown()</span></td>
+                    <td class="desc">Dipanggil saat tombol ditekan (mouse atau sentuhan). Mengatur <code>isPressed = true</code> sehingga efek press (skala mengecil, warna gelap) aktif.</td>
+                </tr>
+
+                <!-- 10. OnPointerUp -->
+                <tr>
+                    <td><span class="code-snip">public void OnPointerUp(PointerEventData eventData)<br>{<br>    isPressed = false;<br>}</span></td>
+                    <td><span class="func-name">OnPointerUp()</span></td>
+                    <td class="desc">Dipanggil saat tombol dilepas. Mengatur <code>isPressed = false</code> sehingga efek press hilang dan tombol kembali ke status hover atau normal.</td>
+                </tr>
+
+                <!-- 11. Catatan penggunaan -->
+                <tr>
+                    <td><span class="code-snip">// (seluruh kode)</span></td>
+                    <td><span class="func-name">Cara Kerja</span></td>
+                    <td class="desc">Efek ini bekerja secara independen dari logika tombol (misalnya <code>Button.onClick</code>). Hanya menangani aspek visual. Dapat dipasang pada objek yang memiliki komponen <code>Image</code> (biasanya tombol UI).</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <span>📁 <strong>Path:</strong> Assets/Scripts/UTS_Dimas/ButtonClickEffect.cs</span>
+        <span>🧑‍💻 Bagian dari sistem evakuasi UTS · Dimas</span>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvacuationManager.cs – Penjelasan Kode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            padding: 2rem 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #21262d;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #58a6ff, #f0883e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .meta {
+            color: #8b949e;
+            font-size: 0.9rem;
+            background: #161b22;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #30363d;
+        }
+
+        /* Tabel */
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            background: #161b22;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            min-width: 700px;
+        }
+
+        thead {
+            background: #0d1117;
+            border-bottom: 2px solid #30363d;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 0.9rem 1.2rem;
+            font-weight: 600;
+            color: #f0f6fc;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        thead th:first-child { width: 28%; }
+        thead th:nth-child(2) { width: 20%; }
+        thead th:last-child { width: 52%; }
+
+        tbody tr {
+            border-bottom: 1px solid #21262d;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #1c2128;
+        }
+
+        tbody td {
+            padding: 0.9rem 1.2rem;
+            vertical-align: top;
+        }
+
+        .code-snip {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.82rem;
+            background: #0d1117;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            color: #c9d1d9;
+            display: inline-block;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .func-name {
+            font-weight: 600;
+            color: #f0883e;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .desc {
+            color: #c9d1d9;
+            font-size: 0.92rem;
+        }
+
+        .desc strong {
+            color: #f0f6fc;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            background: #1f3a5f;
+            color: #58a6ff;
+            margin-right: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-core { background: #2d1f3a; color: #d2a8ff; }
+        .badge-ui { background: #1f3a2d; color: #7ee787; }
+        .badge-helper { background: #2d2d2d; color: #b1b1b1; }
+
+        .footer {
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #21262d;
+            color: #8b949e;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            thead th, tbody td { padding: 0.6rem 0.8rem; }
+            .code-snip { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>📄 EvacuationManager.cs</h1>
+        <span class="meta">🧠 Core Logic · Runtime · 220+ baris</span>
+    </div>
+
+    <!-- PENJELASAN SINGKAT -->
+    <div style="background:#161b22; border:1px solid #30363d; border-radius:12px; padding:1.2rem 1.8rem; margin-bottom:1.8rem;">
+        <p style="color:#c9d1d9; font-size:1rem;">
+            <strong>Fungsi utama:</strong> Mengelola seluruh alur evakuasi – status checklist, minimap, 
+            interaksi stasiun, umpan balik visual, dan koneksi otomatis ke komponen UI. 
+            Bertindak sebagai <em>state machine</em> untuk 4 tahap evakuasi.
+        </p>
+    </div>
+
+    <!-- TABEL PENJELASAN PER BARIS/METODE -->
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>📌 Baris Kode (cuplikan)</th>
+                    <th>🎯 Fungsi / Metode</th>
+                    <th>📖 Penjelasan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 1. Deklarasi UI References -->
+                <tr>
+                    <td><span class="code-snip">public TextMeshProUGUI txtObjectiveID;<br>public TextMeshProUGUI txtObjectiveAlarm;<br>…<br>public Image mapExit;</span></td>
+                    <td><span class="func-name">UI References</span></td>
+                    <td class="desc">Deklarasi referensi ke elemen UI (teks checklist, timer, status, popup, flash, minimap). Semua akan diisi secara otomatis melalui <code>FindUIReferences()</code> atau drag-drop di Inspector.</td>
+                </tr>
+
+                <!-- 2. Station objects -->
+                <tr>
+                    <td><span class="code-snip">public GameObject stationIDCard;<br>public GameObject stationAlarm;<br>…<br>public GameObject stationExit;</span></td>
+                    <td><span class="func-name">Station References</span></td>
+                    <td class="desc">Referensi ke objek stasiun (kubus berwarna) untuk mengubah warna saat misi selesai.</td>
+                </tr>
+
+                <!-- 3. Color States -->
+                <tr>
+                    <td><span class="code-snip">[Header("Color States")]<br>public Color colorTodo = Color.gray;<br>public Color colorActive = Color.yellow;<br>public Color colorDone = Color.green;<br>public Color colorError = Color.red;</span></td>
+                    <td><span class="func-name">Warna Status</span></td>
+                    <td class="desc">Warna yang digunakan untuk checklist, minimap, dan feedback. <strong>Todo</strong> (belum bisa), <strong>Active</strong> (sedang berlangsung), <strong>Done</strong> (selesai), <strong>Error</strong> (peringatan).</td>
+                </tr>
+
+                <!-- 4. Private variables -->
+                <tr>
+                    <td><span class="code-snip">private bool hasIDCard = false;<br>private bool isAlarmActivated = false;<br>private bool isDoorOpened = false;<br>private bool isEvacuationComplete = false;<br>private float timeRemaining = 120f;<br>private bool isTimerRunning = true;<br>private Coroutine feedbackCoroutine;</span></td>
+                    <td><span class="func-name">State Variables</span></td>
+                    <td class="desc">Menyimpan status progres evakuasi, sisa waktu, status timer, dan referensi coroutine untuk feedback agar bisa dihentikan jika perlu.</td>
+                </tr>
+
+                <!-- 5. Start() -->
+                <tr>
+                    <td><span class="code-snip">void Start()<br>{<br>    FindUIReferences();<br>    ConnectButtonsManually();<br>    UpdateChecklistUI();<br>    UpdateMapUI();<br>    if (warningCanvasGroup != null) warningCanvasGroup.alpha = 0f;<br>    TimerManager timerMgr = FindObjectOfType&lt;TimerManager&gt;();<br>    if (timerMgr != null) timerMgr.OnTimerExpiredEvent += OnTimerExpired;<br>}</span></td>
+                    <td><span class="func-name">Start()</span></td>
+                    <td class="desc">Inisialisasi: mencari referensi UI secara otomatis, menghubungkan tombol secara manual, perbarui UI, sembunyikan popup, dan daftarkan event <code>OnTimerExpired</code> dari <code>TimerManager</code>.</td>
+                </tr>
+
+                <!-- 6. FindUIReferences() -->
+                <tr>
+                    <td><span class="code-snip">void FindUIReferences()<br>{<br>    if (txtObjectiveID == null) txtObjectiveID = GameObject.Find("Txt_ID")?.GetComponent&lt;TextMeshProUGUI&gt;();<br>    …<br>}</span></td>
+                    <td><span class="func-name">FindUIReferences()</span></td>
+                    <td class="desc">Mencari semua komponen UI berdasarkan nama GameObject. Sebagai <em>fallback</em> jika referensi tidak di-set di Inspector. Memudahkan proses build otomatis.</td>
+                </tr>
+
+                <!-- 7. ConnectButtonsManually() -->
+                <tr>
+                    <td><span class="code-snip">void ConnectButtonsManually()<br>{<br>    Button[] allButtons = FindObjectsOfType&lt;Button&gt;(true);<br>    foreach (Button btn in allButtons) { … }<br>}</span></td>
+                    <td><span class="func-name">ConnectButtonsManually()</span></td>
+                    <td class="desc">Mencari semua tombol di scene dan memasang listener <code>onClick</code> ke metode yang sesuai berdasarkan nama tombol. Menjamin tombol world-space tetap terhubung meskipun referensi terlepas.</td>
+                </tr>
+
+                <!-- 8. Update() -->
+                <tr>
+                    <td><span class="code-snip">void Update()<br>{<br>    if (isTimerRunning && !isEvacuationComplete && timeRemaining > 0) { … }<br>    else if (timeRemaining <= 0 && !isEvacuationComplete) { … }<br>}</span></td>
+                    <td><span class="func-name">Update()</span></td>
+                    <td class="desc">Mengurangi timer setiap frame, memperbarui tampilan teks timer dengan format MM:SS. Jika waktu tersisa < 30 detik, teks berkedip merah-putih. Jika waktu habis, panggil <code>ShowWarningPopup</code> dan hentikan timer.</td>
+                </tr>
+
+                <!-- 9. OnTimerExpired() -->
+                <tr>
+                    <td><span class="code-snip">public void OnTimerExpired()<br>{<br>    if (isEvacuationComplete) return;<br>    isTimerRunning = false;<br>    ShowWarningPopup("⛔ TIME'S UP! Evacuation failed.", true);<br>}</span></td>
+                    <td><span class="func-name">OnTimerExpired()</span></td>
+                    <td class="desc">Dipanggil oleh <code>TimerManager</code> saat waktu habis. Menampilkan popup kegagalan dan menghentikan timer (jika belum selesai).</td>
+                </tr>
+
+                <!-- 10. InteractIDCardStation -->
+                <tr>
+                    <td><span class="code-snip">public void InteractIDCardStation()<br>{<br>    if (isEvacuationComplete || timeRemaining <= 0) return;<br>    if (!hasIDCard) { hasIDCard = true; … }<br>    else ShowFeedback("⚠️ ID Card already taken.", false);<br>}</span></td>
+                    <td><span class="func-name">InteractIDCardStation()</span></td>
+                    <td class="desc">Tombol stasiun biru. Jika ID card belum diambil, tandai selesai, perbarui UI, ubah warna stasiun menjadi hijau, dan tampilkan feedback sukses. Jika sudah, tampilkan pesan peringatan.</td>
+                </tr>
+
+                <!-- 11. InteractAlarmStation -->
+                <tr>
+                    <td><span class="code-snip">public void InteractAlarmStation()<br>{<br>    if (!hasIDCard) { ShowWarningPopup("❌ Take ID Card First!", true); return; }<br>    if (!isAlarmActivated) { isAlarmActivated = true; … }<br>}</span></td>
+                    <td><span class="func-name">InteractAlarmStation()</span></td>
+                    <td class="desc">Tombol stasiun merah. Memeriksa apakah ID card sudah diambil. Jika belum, tampilkan popup error. Jika sudah dan alarm belum aktif, aktifkan alarm, update UI, ubah warna stasiun.</td>
+                </tr>
+
+                <!-- 12. InteractEmergencyDoorStation -->
+                <tr>
+                    <td><span class="code-snip">public void InteractEmergencyDoorStation()<br>{<br>    if (!hasIDCard) { ShowWarningPopup("❌ Take ID Card First!", true); return; }<br>    if (!isAlarmActivated) { ShowWarningPopup("❌ Activate Alarm First!", true); return; }<br>    if (!isDoorOpened) { isDoorOpened = true; … DoorController door = FindObjectOfType&lt;DoorController&gt;(); door.OpenDoor(); }<br>}</span></td>
+                    <td><span class="func-name">InteractEmergencyDoorStation()</span></td>
+                    <td class="desc">Tombol stasiun hijau. Memastikan ID card dan alarm sudah aktif. Jika belum, tampilkan peringatan. Jika sudah, buka pintu (<code>DoorController.OpenDoor()</code>) dan tandai selesai.</td>
+                </tr>
+
+                <!-- 13. InteractExitStation -->
+                <tr>
+                    <td><span class="code-snip">public void InteractExitStation()<br>{<br>    if (!isDoorOpened) { ShowWarningPopup("❌ Emergency Door is Locked!", true); return; }<br>    isEvacuationComplete = true;<br>    …<br>    TimerManager timerMgr = FindObjectOfType&lt;TimerManager&gt;();<br>    if (timerMgr != null) timerMgr.StopTimer();<br>}</span></td>
+                    <td><span class="func-name">InteractExitStation()</span></td>
+                    <td class="desc">Tombol stasiun kuning. Memastikan pintu darurat sudah terbuka. Jika belum, tampilkan error. Jika sudah, evakuasi selesai, hentikan timer, tampilkan pesan sukses, dan update UI.</td>
+                </tr>
+
+                <!-- 14. ChangeStationColor -->
+                <tr>
+                    <td><span class="code-snip">void ChangeStationColor(GameObject station, Color color)<br>{<br>    Renderer rend = station.GetComponent&lt;Renderer&gt;();<br>    if (rend != null) { Material mat = new Material(rend.material); mat.color = color; mat.EnableKeyword("_EMISSION"); mat.SetColor("_EmissionColor", color * 0.4f); rend.material = mat; }<br>}</span></td>
+                    <td><span class="func-name">ChangeStationColor()</span></td>
+                    <td class="desc">Mengubah warna material stasiun dan menambahkan efek emisi (glow) untuk menunjukkan bahwa stasiun sudah selesai. Membuat material baru agar tidak mengganggu material asli.</td>
+                </tr>
+
+                <!-- 15. UpdateChecklistUI -->
+                <tr>
+                    <td><span class="code-snip">public void UpdateChecklistUI()<br>{<br>    txtObjectiveID.text = (hasIDCard ? "☑" : "☐") + " 1. Take ID Card";<br>    txtObjectiveID.color = hasIDCard ? colorDone : colorActive;<br>    txtObjectiveID.fontStyle = hasIDCard ? FontStyles.Strikethrough : FontStyles.Normal;<br>    …<br>}</span></td>
+                    <td><span class="func-name">UpdateChecklistUI()</span></td>
+                    <td class="desc">Memperbarui teks checklist dengan centang (☑/☐), warna sesuai status (todo/active/done), dan coretan jika selesai. Dipanggil setiap kali ada perubahan status.</td>
+                </tr>
+
+                <!-- 16. UpdateMapUI -->
+                <tr>
+                    <td><span class="code-snip">public void UpdateMapUI()<br>{<br>    if (mapIDCard != null) mapIDCard.color = hasIDCard ? colorDone : colorActive;<br>    …<br>}</span></td>
+                    <td><span class="func-name">UpdateMapUI()</span></td>
+                    <td class="desc">Memperbarui warna keempat ikon minimap (kotak kecil di panel kiri) sesuai status progres. Aktif (kuning) untuk tugas yang sedang berlangsung, hijau untuk selesai, abu-abu untuk belum bisa.</td>
+                </tr>
+
+                <!-- 17. UpdateStatusAfterDelay -->
+                <tr>
+                    <td><span class="code-snip">IEnumerator UpdateStatusAfterDelay()<br>{<br>    yield return new WaitForSeconds(0.5f);<br>    if (txtFeedback != null && !isEvacuationComplete)<br>        txtFeedback.text = GetCurrentObjectiveHint();<br>}</span></td>
+                    <td><span class="func-name">UpdateStatusAfterDelay()</span></td>
+                    <td class="desc">Coroutine yang menunggu setengah detik setelah aksi, lalu mengatur teks status bar menjadi petunjuk tujuan selanjutnya (dari <code>GetCurrentObjectiveHint()</code>).</td>
+                </tr>
+
+                <!-- 18. ShowFeedback, ShowSuccessFeedback, ShowWarningPopup -->
+                <tr>
+                    <td><span class="code-snip">void ShowFeedback(string message, bool isWarning)<br>void ShowSuccessFeedback(string message)<br>void ShowWarningPopup(string message, bool isError)</span></td>
+                    <td><span class="func-name">Feedback Methods</span></td>
+                    <td class="desc"><strong>ShowFeedback</strong> menampilkan pesan di status bar selama 3 detik. <strong>ShowSuccessFeedback</strong> memanggil <code>ShowFeedback</code> dengan flash hijau. <strong>ShowWarningPopup</strong> menampilkan popup modal dengan fade in/out dan flash merah jika error.</td>
+                </tr>
+
+                <!-- 19. ShowFeedbackRoutine, ShowPopupRoutine, FlashColor -->
+                <tr>
+                    <td><span class="code-snip">IEnumerator ShowFeedbackRoutine(string message, bool isWarning)<br>IEnumerator ShowPopupRoutine(string message, bool isError)<br>IEnumerator FlashColor(Color color)</span></td>
+                    <td><span class="func-name">Coroutines Visual</span></td>
+                    <td class="desc"><strong>ShowFeedbackRoutine</strong>: tampilkan pesan di status bar selama 3 detik, lalu kembalikan ke petunjuk. <strong>ShowPopupRoutine</strong>: fade in popup, tunggu 2.5 detik, fade out. <strong>FlashColor</strong>: kilatan warna di layar (merah/hijau) selama 0.3 detik.</td>
+                </tr>
+
+                <!-- 20. GetCurrentObjectiveHint -->
+                <tr>
+                    <td><span class="code-snip">string GetCurrentObjectiveHint()<br>{<br>    if (!hasIDCard) return "🔵 Go to BLUE station …";<br>    if (!isAlarmActivated) return "🔴 Go to RED station …";<br>    if (!isDoorOpened) return "🟢 Go to GREEN station …";<br>    if (!isEvacuationComplete) return "🟡 Go to YELLOW station …";<br>    return "🏆 Evacuation Complete!";<br>}</span></td>
+                    <td><span class="func-name">GetCurrentObjectiveHint()</span></td>
+                    <td class="desc">Mengembalikan petunjuk teks berdasarkan status progres. Digunakan untuk mengisi status bar setelah aksi atau saat inisialisasi. Membantu pemain tahu ke mana harus pergi.</td>
+                </tr>
+
+                <!-- 21. OnDestroy -->
+                <tr>
+                    <td><span class="code-snip">void OnDestroy()<br>{<br>    TimerManager timerMgr = FindObjectOfType&lt;TimerManager&gt;();<br>    if (timerMgr != null) timerMgr.OnTimerExpiredEvent -= OnTimerExpired;<br>}</span></td>
+                    <td><span class="func-name">OnDestroy()</span></td>
+                    <td class="desc">Membersihkan event subscription saat objek dihancurkan untuk mencegah memory leak atau pemanggilan ganda.</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <span>📁 <strong>Path:</strong> Assets/Scripts/UTS_Dimas/EvacuationManager.cs</span>
+        <span>🧑‍💻 Bagian dari sistem evakuasi UTS · Dimas</span>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DoorController.cs – Penjelasan Kode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            padding: 2rem 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #21262d;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #58a6ff, #f0883e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .meta {
+            color: #8b949e;
+            font-size: 0.9rem;
+            background: #161b22;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #30363d;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            background: #161b22;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            min-width: 700px;
+        }
+
+        thead {
+            background: #0d1117;
+            border-bottom: 2px solid #30363d;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 0.9rem 1.2rem;
+            font-weight: 600;
+            color: #f0f6fc;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        thead th:first-child { width: 30%; }
+        thead th:nth-child(2) { width: 20%; }
+        thead th:last-child { width: 50%; }
+
+        tbody tr {
+            border-bottom: 1px solid #21262d;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #1c2128;
+        }
+
+        tbody td {
+            padding: 0.9rem 1.2rem;
+            vertical-align: top;
+        }
+
+        .code-snip {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.82rem;
+            background: #0d1117;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            color: #c9d1d9;
+            display: inline-block;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .func-name {
+            font-weight: 600;
+            color: #f0883e;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .desc {
+            color: #c9d1d9;
+            font-size: 0.92rem;
+        }
+
+        .desc strong {
+            color: #f0f6fc;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            background: #1f3a5f;
+            color: #58a6ff;
+            margin-right: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-interaction { background: #2d1f3a; color: #d2a8ff; }
+
+        .footer {
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #21262d;
+            color: #8b949e;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            thead th, tbody td { padding: 0.6rem 0.8rem; }
+            .code-snip { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🚪 DoorController.cs</h1>
+        <span class="meta">🚪 Interaksi · Runtime · 42 baris</span>
+    </div>
+
+    <!-- RINGKASAN -->
+    <div style="background:#161b22; border:1px solid #30363d; border-radius:12px; padding:1.2rem 1.8rem; margin-bottom:1.8rem;">
+        <p style="color:#c9d1d9; font-size:1rem;">
+            <strong>Fungsi utama:</strong> Mengontrol pergerakan pintu darurat. Saat dipanggil <code>OpenDoor()</code>,
+            pintu bergeser secara halus (menggunakan <code>Vector3.Lerp</code>) dari posisi tertutup ke posisi terbuka
+            dengan offset yang dapat diatur. Mendukung metode <code>CloseDoor()</code> dan pengecekan status <code>IsOpen()</code>.
+        </p>
+    </div>
+
+    <!-- TABEL PENJELASAN -->
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>📌 Baris Kode (cuplikan)</th>
+                    <th>🎯 Fungsi / Metode</th>
+                    <th>📖 Penjelasan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 1. Deklarasi variabel -->
+                <tr>
+                    <td><span class="code-snip">private Vector3 closedPosition;<br>private Vector3 openPosition;<br>public float openOffset = 2f;<br>private bool isOpen = false;<br>private float moveSpeed = 3f;</span></td>
+                    <td><span class="func-name">Variabel</span></td>
+                    <td class="desc">
+                        <strong>closedPosition</strong> – posisi awal pintu (saat tertutup).<br>
+                        <strong>openPosition</strong> – posisi pintu saat terbuka (dihitung dari closedPosition + offset).<br>
+                        <strong>openOffset</strong> – jarak pergeseran pintu saat terbuka (bisa diatur di Inspector).<br>
+                        <strong>isOpen</strong> – status boolean apakah pintu sedang terbuka.<br>
+                        <strong>moveSpeed</strong> – kecepatan pergerakan pintu (semakin tinggi semakin cepat).
+                    </td>
+                </tr>
+
+                <!-- 2. Start() -->
+                <tr>
+                    <td><span class="code-snip">private void Start()<br>{<br>    closedPosition = transform.position;<br>    openPosition = closedPosition + new Vector3(0, 0, openOffset);<br>}</span></td>
+                    <td><span class="func-name">Start()</span></td>
+                    <td class="desc">Inisialisasi: menyimpan posisi awal pintu sebagai <code>closedPosition</code>, lalu menghitung <code>openPosition</code> dengan menambahkan offset pada sumbu Z (arah depan pintu). Offset dapat diatur di Inspector.</td>
+                </tr>
+
+                <!-- 3. Update() -->
+                <tr>
+                    <td><span class="code-snip">private void Update()<br>{<br>    if (isOpen)<br>    {<br>        transform.position = Vector3.Lerp(transform.position, openPosition, Time.deltaTime * moveSpeed);<br>    }<br>}</span></td>
+                    <td><span class="func-name">Update()</span></td>
+                    <td class="desc">Setiap frame, jika pintu dalam keadaan terbuka (<code>isOpen == true</code>), posisi pintu di-lerp menuju <code>openPosition</code> dengan kecepatan <code>moveSpeed</code>. Memberikan efek pergerakan yang halus.</td>
+                </tr>
+
+                <!-- 4. OpenDoor() -->
+                <tr>
+                    <td><span class="code-snip">public void OpenDoor()<br>{<br>    if (!isOpen)<br>    {<br>        isOpen = true;<br>        Debug.Log("[DoorController] Door opened!");<br>    }<br>}</span></td>
+                    <td><span class="func-name">OpenDoor()</span></td>
+                    <td class="desc">Metode publik untuk membuka pintu. Memeriksa apakah pintu belum terbuka, jika ya maka set <code>isOpen = true</code> sehingga <code>Update()</code> mulai menggerakkan pintu. Mencetak log untuk debugging.</td>
+                </tr>
+
+                <!-- 5. CloseDoor() -->
+                <tr>
+                    <td><span class="code-snip">public void CloseDoor()<br>{<br>    if (isOpen)<br>    {<br>        isOpen = false;<br>        Debug.Log("[DoorController] Door closed!");<br>    }<br>}</span></td>
+                    <td><span class="func-name">CloseDoor()</span></td>
+                    <td class="desc">Metode publik untuk menutup pintu. Memeriksa apakah pintu sedang terbuka, jika ya maka set <code>isOpen = false</code> sehingga pergerakan berhenti. Pintu akan tetap di posisi terakhirnya (tidak otomatis kembali).</td>
+                </tr>
+
+                <!-- 6. IsOpen() -->
+                <tr>
+                    <td><span class="code-snip">public bool IsOpen()<br>{<br>    return isOpen;<br>}</span></td>
+                    <td><span class="func-name">IsOpen()</span></td>
+                    <td class="desc">Metode publik untuk mengecek status pintu. Mengembalikan nilai <code>isOpen</code>. Berguna bagi script lain (misalnya <code>EvacuationManager</code>) untuk mengetahui apakah pintu sudah terbuka.</td>
+                </tr>
+
+                <!-- 7. Catatan desain -->
+                <tr>
+                    <td><span class="code-snip">// Pintu tidak otomatis kembali ke posisi tertutup</span></td>
+                    <td><span class="func-name">Desain</span></td>
+                    <td class="desc">Pintu hanya bergerak saat <code>isOpen == true</code>. Saat <code>CloseDoor()</code> dipanggil, pintu berhenti di posisi terakhirnya. Untuk mengembalikan ke posisi tertutup, perlu implementasi tambahan (misalnya lerp balik ke <code>closedPosition</code>).</td>
+                </tr>
+
+                <!-- 8. Penggunaan di EvacuationManager -->
+                <tr>
+                    <td><span class="code-snip">// Dipanggil dari EvacuationManager.InteractEmergencyDoorStation()</span></td>
+                    <td><span class="func-name">Integrasi</span></td>
+                    <td class="desc">Script ini digunakan oleh <code>EvacuationManager</code> saat pemain mengklik stasiun pintu (<code>InteractEmergencyDoorStation()</code>). Setelah semua syarat terpenuhi, <code>door.OpenDoor()</code> dipanggil untuk membuka pintu.</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <span>📁 <strong>Path:</strong> Assets/Scripts/UTS_Dimas/DoorController.cs</span>
+        <span>🧑‍💻 Bagian dari sistem evakuasi UTS · Dimas</span>
+    </div>
+
+</div>
+</body>
+</html>

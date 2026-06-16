@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StationClickEffect.cs – Penjelasan Kode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            padding: 2rem 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #21262d;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #58a6ff, #f0883e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .meta {
+            color: #8b949e;
+            font-size: 0.9rem;
+            background: #161b22;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #30363d;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            background: #161b22;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            min-width: 700px;
+        }
+
+        thead {
+            background: #0d1117;
+            border-bottom: 2px solid #30363d;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 0.9rem 1.2rem;
+            font-weight: 600;
+            color: #f0f6fc;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        thead th:first-child { width: 30%; }
+        thead th:nth-child(2) { width: 20%; }
+        thead th:last-child { width: 50%; }
+
+        tbody tr {
+            border-bottom: 1px solid #21262d;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #1c2128;
+        }
+
+        tbody td {
+            padding: 0.9rem 1.2rem;
+            vertical-align: top;
+        }
+
+        .code-snip {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.82rem;
+            background: #0d1117;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            color: #c9d1d9;
+            display: inline-block;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .func-name {
+            font-weight: 600;
+            color: #f0883e;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .desc {
+            color: #c9d1d9;
+            font-size: 0.92rem;
+        }
+
+        .desc strong {
+            color: #f0f6fc;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            background: #1f3a5f;
+            color: #58a6ff;
+            margin-right: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-visual { background: #1f3a2d; color: #7ee787; }
+
+        .footer {
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #21262d;
+            color: #8b949e;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            thead th, tbody td { padding: 0.6rem 0.8rem; }
+            .code-snip { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🎨 StationClickEffect.cs</h1>
+        <span class="meta">🎨 Visual Effect · Runtime · 37 baris</span>
+    </div>
+
+    <!-- RINGKASAN -->
+    <div style="background:#161b22; border:1px solid #30363d; border-radius:12px; padding:1.2rem 1.8rem; margin-bottom:1.8rem;">
+        <p style="color:#c9d1d9; font-size:1rem;">
+            <strong>Fungsi utama:</strong> Mengontrol efek visual pada stasiun (objek 3D) dengan mengubah warna material
+            dan menambahkan efek emisi (glow). Digunakan oleh <code>EvacuationManager</code> untuk menandai stasiun
+            yang sudah selesai (berubah menjadi hijau) atau mereset ke warna aslinya. Memberikan umpan balik visual
+            yang jelas kepada pemain tentang progres evakuasi.
+        </p>
+    </div>
+
+    <!-- TABEL PENJELASAN -->
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>📌 Baris Kode (cuplikan)</th>
+                    <th>🎯 Fungsi / Metode</th>
+                    <th>📖 Penjelasan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 1. Deklarasi kelas -->
+                <tr>
+                    <td><span class="code-snip">public class StationClickEffect : MonoBehaviour</span></td>
+                    <td><span class="func-name">Deklarasi Kelas</span></td>
+                    <td class="desc">Kelas turunan <code>MonoBehaviour</code> yang dapat dipasang pada objek stasiun (kubus berwarna) untuk mengelola efek visualnya. Memberikan API publik untuk mengubah warna dan emisi.</td>
+                </tr>
+
+                <!-- 2. Variabel publik -->
+                <tr>
+                    <td><span class="code-snip">public Color originalColor = Color.white;<br>public string stationName = "";</span></td>
+                    <td><span class="func-name">Variabel Publik</span></td>
+                    <td class="desc">
+                        <strong>originalColor</strong> – warna awal stasiun (dapat diatur di Inspector). Digunakan sebagai referensi untuk <code>ResetColor()</code>.<br>
+                        <strong>stationName</strong> – (tidak digunakan dalam kode) dapat digunakan untuk identifikasi atau debugging.
+                    </td>
+                </tr>
+
+                <!-- 3. Variabel privat -->
+                <tr>
+                    <td><span class="code-snip">private Renderer rend;<br>private Material mat;</span></td>
+                    <td><span class="func-name">Variabel Privat</span></td>
+                    <td class="desc">
+                        <strong>rend</strong> – referensi ke komponen <code>Renderer</code> objek.<br>
+                        <strong>mat</strong> – referensi ke <code>Material</code> yang digunakan oleh renderer. Disimpan agar dapat diubah langsung tanpa perlu <code>GetComponent</code> setiap kali.
+                    </td>
+                </tr>
+
+                <!-- 4. Start() -->
+                <tr>
+                    <td><span class="code-snip">void Start()<br>{<br>    rend = GetComponent&lt;Renderer&gt;();<br>    if (rend != null)<br>    {<br>        mat = rend.material;<br>    }<br>}</span></td>
+                    <td><span class="func-name">Start()</span></td>
+                    <td class="desc">Inisialisasi: mengambil komponen <code>Renderer</code> dari objek, lalu menyimpan material-nya ke variabel <code>mat</code> untuk akses cepat. Jika tidak ada renderer, <code>mat</code> tetap <code>null</code> dan metode lain akan aman (tidak error).</td>
+                </tr>
+
+                <!-- 5. SetColor() -->
+                <tr>
+                    <td><span class="code-snip">public void SetColor(Color color)<br>{<br>    if (rend != null)<br>    {<br>        mat.color = color;<br>        mat.EnableKeyword("_EMISSION");<br>        mat.SetColor("_EmissionColor", color * 0.3f);<br>    }<br>}</span></td>
+                    <td><span class="func-name">SetColor()</span></td>
+                    <td class="desc">
+                        <strong>Fungsi:</strong> Mengubah warna stasiun dan menambahkan efek emisi (glow).
+                        <br>1. Jika renderer tersedia, ubah <code>mat.color</code> ke warna yang diberikan.
+                        <br>2. Aktifkan keyword <code>_EMISSION</code> pada shader material (agar emisi berfungsi).
+                        <br>3. Set <code>_EmissionColor</code> ke warna yang sama dengan intensitas 0.3x (glow redup).
+                        <br>Dipanggil oleh <code>EvacuationManager.ChangeStationColor()</code> saat stasiun selesai.
+                    </td>
+                </tr>
+
+                <!-- 6. ResetColor() -->
+                <tr>
+                    <td><span class="code-snip">public void ResetColor()<br>{<br>    if (rend != null)<br>    {<br>        mat.color = originalColor;<br>        mat.DisableKeyword("_EMISSION");<br>    }<br>}</span></td>
+                    <td><span class="func-name">ResetColor()</span></td>
+                    <td class="desc">
+                        <strong>Fungsi:</strong> Mengembalikan warna stasiun ke warna asli dan menonaktifkan efek emisi.
+                        <br>1. Set <code>mat.color</code> ke <code>originalColor</code> (nilai yang diatur di Inspector).
+                        <br>2. Nonaktifkan keyword <code>_EMISSION</code> untuk menghilangkan glow.
+                        <br>Berguna jika ingin mereset stasiun ke keadaan awal (misalnya untuk restart scene).
+                    </td>
+                </tr>
+
+                <!-- 7. Catatan penggunaan -->
+                <tr>
+                    <td><span class="code-snip">// Dipasang pada setiap stasiun (IDCard, Alarm, Door, Exit)</span></td>
+                    <td><span class="func-name">Penempatan</span></td>
+                    <td class="desc">Script ini ditempelkan pada keempat stasiun (IDCard, Alarm, Door, Exit) yang dibuat oleh <code>EvacuationSceneBuilder</code>. <code>EvacuationManager</code> memanggil <code>SetColor(colorDone)</code> saat stasiun selesai.</td>
+                </tr>
+
+                <!-- 8. Material instance -->
+                <tr>
+                    <td><span class="code-snip">// Membuat material instance agar tidak mengganggu material asli</span></td>
+                    <td><span class="func-name">Material Instance</span></td>
+                    <td class="desc">Karena <code>rend.material</code> menghasilkan instance material (bukan shared), perubahan hanya memengaruhi objek ini dan tidak mengganggu objek lain yang menggunakan material yang sama. Praktik terbaik untuk efek per objek.</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <span>📁 <strong>Path:</strong> Assets/Scripts/UTS_Dimas/StationClickEffect.cs</span>
+        <span>🧑‍💻 Bagian dari sistem evakuasi UTS · Dimas</span>
+    </div>
+
+</div>
+</body>
+</html>

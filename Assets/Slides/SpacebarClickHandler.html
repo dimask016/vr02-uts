@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpacebarClickHandler.cs – Penjelasan Kode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            padding: 2rem 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #21262d;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #58a6ff, #f0883e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .meta {
+            color: #8b949e;
+            font-size: 0.9rem;
+            background: #161b22;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #30363d;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            background: #161b22;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            min-width: 700px;
+        }
+
+        thead {
+            background: #0d1117;
+            border-bottom: 2px solid #30363d;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 0.9rem 1.2rem;
+            font-weight: 600;
+            color: #f0f6fc;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        thead th:first-child { width: 30%; }
+        thead th:nth-child(2) { width: 20%; }
+        thead th:last-child { width: 50%; }
+
+        tbody tr {
+            border-bottom: 1px solid #21262d;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #1c2128;
+        }
+
+        tbody td {
+            padding: 0.9rem 1.2rem;
+            vertical-align: top;
+        }
+
+        .code-snip {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.82rem;
+            background: #0d1117;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            color: #c9d1d9;
+            display: inline-block;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .func-name {
+            font-weight: 600;
+            color: #f0883e;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .desc {
+            color: #c9d1d9;
+            font-size: 0.92rem;
+        }
+
+        .desc strong {
+            color: #f0f6fc;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            background: #1f3a5f;
+            color: #58a6ff;
+            margin-right: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-input { background: #2d1f3a; color: #d2a8ff; }
+
+        .footer {
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #21262d;
+            color: #8b949e;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            thead th, tbody td { padding: 0.6rem 0.8rem; }
+            .code-snip { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>⌨ SpacebarClickHandler.cs</h1>
+        <span class="meta">⌨ Input Handler · Runtime · 28 baris</span>
+    </div>
+
+    <!-- RINGKASAN -->
+    <div style="background:#161b22; border:1px solid #30363d; border-radius:12px; padding:1.2rem 1.8rem; margin-bottom:1.8rem;">
+        <p style="color:#c9d1d9; font-size:1rem;">
+            <strong>Fungsi utama:</strong> Menangkap input tombol <kbd>Space</kbd> dan mensimulasikan klik pada tombol UI
+            yang berada tepat di tengah layar (crosshair). Menggunakan sistem <code>EventSystem</code> dan <code>Raycast</code>
+            untuk mendeteksi komponen <code>Button</code> di bawah kursor (tengah layar), lalu memicu <code>onClick</code>-nya.
+            Memungkinkan pemain berinteraksi dengan tombol world-space tanpa harus mengarahkan kursor secara manual.
+        </p>
+    </div>
+
+    <!-- TABEL PENJELASAN -->
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>📌 Baris Kode (cuplikan)</th>
+                    <th>🎯 Fungsi / Metode</th>
+                    <th>📖 Penjelasan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 1. Deklarasi namespace & kelas -->
+                <tr>
+                    <td><span class="code-snip">using UnityEngine;<br>using UnityEngine.EventSystems;<br>using UnityEngine.UI;</span></td>
+                    <td><span class="func-name">Namespace</span></td>
+                    <td class="desc">Mengimpor namespace yang diperlukan: <code>UnityEngine</code> untuk MonoBehaviour, <code>UnityEngine.EventSystems</code> untuk sistem raycast UI, dan <code>UnityEngine.UI</code> untuk komponen Button.</td>
+                </tr>
+
+                <!-- 2. Deklarasi kelas -->
+                <tr>
+                    <td><span class="code-snip">public class SpacebarClickHandler : MonoBehaviour</span></td>
+                    <td><span class="func-name">Deklarasi Kelas</span></td>
+                    <td class="desc">Kelas turunan <code>MonoBehaviour</code> yang dapat dipasang pada objek kamera atau objek lain di scene. Biasanya ditempelkan pada <code>MainCamera</code> agar selalu aktif saat pemain bergerak.</td>
+                </tr>
+
+                <!-- 3. Update() – deteksi Space -->
+                <tr>
+                    <td><span class="code-snip">void Update()<br>{<br>    if (Input.GetKeyDown(KeyCode.Space))<br>    {<br>        // ...<br>    }<br>}</span></td>
+                    <td><span class="func-name">Update()</span></td>
+                    <td class="desc">Setiap frame, periksa apakah tombol <kbd>Space</kbd> baru saja ditekan (<code>GetKeyDown</code>). Jika ya, jalankan logika raycast untuk menemukan tombol di tengah layar.</td>
+                </tr>
+
+                <!-- 4. Membuat PointerEventData -->
+                <tr>
+                    <td><span class="code-snip">PointerEventData pointerData = new PointerEventData(EventSystem.current);<br>pointerData.position = new Vector2(Screen.width / 2, Screen.height / 2);</span></td>
+                    <td><span class="func-name">Pointer Data</span></td>
+                    <td class="desc">Buat objek <code>PointerEventData</code> yang merepresentasikan posisi pointer (kursor). Posisi diatur ke koordinat tengah layar (<code>Screen.width/2</code>, <code>Screen.height/2</code>) sehingga raycast akan mengenai elemen UI yang berada di titik tengah (di bawah crosshair).</td>
+                </tr>
+
+                <!-- 5. RaycastAll -->
+                <tr>
+                    <td><span class="code-snip">var results = new System.Collections.Generic.List&lt;RaycastResult&gt;();<br>EventSystem.current.RaycastAll(pointerData, results);</span></td>
+                    <td><span class="func-name">Raycast UI</span></td>
+                    <td class="desc">Buat daftar kosong untuk menampung hasil raycast, lalu panggil <code>EventSystem.current.RaycastAll</code> dengan <code>pointerData</code> sebagai parameter. Fungsi ini akan mengembalikan semua elemen UI (Graphic) yang berada di bawah posisi pointer (tengah layar).</td>
+                </tr>
+
+                <!-- 6. Looping hasil dan deteksi Button -->
+                <tr>
+                    <td><span class="code-snip">foreach (var result in results)<br>{<br>    Button btn = result.gameObject.GetComponent&lt;Button&gt;();<br>    if (btn != null && btn.interactable)<br>    {<br>        btn.onClick.Invoke();<br>        Debug.Log("Spacebar clicked: " + btn.name);<br>        break;<br>    }<br>}</span></td>
+                    <td><span class="func-name">Deteksi & Klik</span></td>
+                    <td class="desc">
+                        <strong>Proses:</strong>
+                        <br>1. Iterasi semua <code>RaycastResult</code> yang ditemukan.
+                        <br>2. Ambil komponen <code>Button</code> dari GameObject hasil raycast.
+                        <br>3. Jika tombol ditemukan <strong>dan</strong> dalam keadaan <code>interactable</code> (aktif), panggil <code>btn.onClick.Invoke()</code> untuk menjalankan semua listener yang terdaftar.
+                        <br>4. Cetak log untuk debugging.
+                        <br>5. <code>break</code> setelah menemukan tombol pertama yang valid (prioritas tombol teratas).
+                    </td>
+                </tr>
+
+                <!-- 7. Catatan penggunaan -->
+                <tr>
+                    <td><span class="code-snip">// Dipasang pada MainCamera</span></td>
+                    <td><span class="func-name">Penempatan</span></td>
+                    <td class="desc">Script ini sebaiknya ditempelkan pada <code>MainCamera</code> (atau objek lain yang selalu aktif) agar selalu mendeteksi input <kbd>Space</kbd> selama permainan berjalan. Dalam proyek ini, dipasang pada kamera yang menjadi anak dari Player.</td>
+                </tr>
+
+                <!-- 8. Interaksi dengan tombol world-space -->
+                <tr>
+                    <td><span class="code-snip">// Bekerja dengan Canvas World Space</span></td>
+                    <td><span class="func-name">World-space UI</span></td>
+                    <td class="desc">Script ini bekerja dengan semua jenis Canvas (Screen Space dan World Space) selama elemen UI memiliki komponen <code>GraphicRaycaster</code> dan <code>Button</code>. Sangat berguna untuk mengklik tombol 3D yang mengambang di dunia tanpa harus menggerakkan kursor.</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <span>📁 <strong>Path:</strong> Assets/Scripts/UTS_Dimas/SpacebarClickHandler.cs</span>
+        <span>🧑‍💻 Bagian dari sistem evakuasi UTS · Dimas</span>
+    </div>
+
+</div>
+</body>
+</html>

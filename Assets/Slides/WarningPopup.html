@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WarningPopup.cs – Penjelasan Kode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            padding: 2rem 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #21262d;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #58a6ff, #f0883e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .meta {
+            color: #8b949e;
+            font-size: 0.9rem;
+            background: #161b22;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #30363d;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            background: #161b22;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            min-width: 700px;
+        }
+
+        thead {
+            background: #0d1117;
+            border-bottom: 2px solid #30363d;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 0.9rem 1.2rem;
+            font-weight: 600;
+            color: #f0f6fc;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        thead th:first-child { width: 30%; }
+        thead th:nth-child(2) { width: 20%; }
+        thead th:last-child { width: 50%; }
+
+        tbody tr {
+            border-bottom: 1px solid #21262d;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #1c2128;
+        }
+
+        tbody td {
+            padding: 0.9rem 1.2rem;
+            vertical-align: top;
+        }
+
+        .code-snip {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.82rem;
+            background: #0d1117;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            color: #c9d1d9;
+            display: inline-block;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .func-name {
+            font-weight: 600;
+            color: #f0883e;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .desc {
+            color: #c9d1d9;
+            font-size: 0.92rem;
+        }
+
+        .desc strong {
+            color: #f0f6fc;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            background: #1f3a5f;
+            color: #58a6ff;
+            margin-right: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-popup { background: #2d1f3a; color: #d2a8ff; }
+
+        .footer {
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #21262d;
+            color: #8b949e;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            thead th, tbody td { padding: 0.6rem 0.8rem; }
+            .code-snip { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>⚠ WarningPopup.cs</h1>
+        <span class="meta">⚠ Popup UI · Runtime · 72 baris</span>
+    </div>
+
+    <!-- RINGKASAN -->
+    <div style="background:#161b22; border:1px solid #30363d; border-radius:12px; padding:1.2rem 1.8rem; margin-bottom:1.8rem;">
+        <p style="color:#c9d1d9; font-size:1rem;">
+            <strong>Fungsi utama:</strong> Menampilkan popup peringatan atau notifikasi sukses dengan efek animasi 
+            <strong>fade in/out</strong>. Mendukung <strong>flash merah</strong> untuk peringatan error dan 
+            manajemen coroutine untuk mencegah tumpang tindih animasi. Digunakan oleh <code>EvacuationManager</code> 
+            untuk memberi umpan balik visual yang jelas kepada pemain.
+        </p>
+    </div>
+
+    <!-- TABEL PENJELASAN -->
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>📌 Baris Kode (cuplikan)</th>
+                    <th>🎯 Fungsi / Metode</th>
+                    <th>📖 Penjelasan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 1. Namespace -->
+                <tr>
+                    <td><span class="code-snip">using UnityEngine;<br>using UnityEngine.UI;<br>using TMPro;<br>using System.Collections;</span></td>
+                    <td><span class="func-name">Namespace</span></td>
+                    <td class="desc">Mengimpor namespace: <code>UnityEngine</code> untuk MonoBehaviour, <code>UnityEngine.UI</code> untuk Image, <code>TMPro</code> untuk TextMeshPro, dan <code>System.Collections</code> untuk Coroutine (IEnumerator).</td>
+                </tr>
+
+                <!-- 2. Deklarasi kelas -->
+                <tr>
+                    <td><span class="code-snip">public class WarningPopup : MonoBehaviour</span></td>
+                    <td><span class="func-name">Deklarasi Kelas</span></td>
+                    <td class="desc">Kelas turunan <code>MonoBehaviour</code> yang dapat dipasang pada GameObject popup (biasanya "WarningPopupPanel" di UI).</td>
+                </tr>
+
+                <!-- 3. Variabel publik -->
+                <tr>
+                    <td><span class="code-snip">public CanvasGroup canvasGroup;<br>public TMP_Text messageText;<br>public Image flashImage;<br>public float fadeDuration = 0.5f;<br>public float displayDuration = 2f;<br>private Coroutine activeRoutine;</span></td>
+                    <td><span class="func-name">Variabel</span></td>
+                    <td class="desc">
+                        <strong>canvasGroup</strong> – komponen <code>CanvasGroup</code> untuk mengontrol alpha (transparansi) seluruh popup.<br>
+                        <strong>messageText</strong> – komponen <code>TMP_Text</code> untuk menampilkan pesan.<br>
+                        <strong>flashImage</strong> – komponen <code>Image</code> untuk efek kilatan merah (full-screen overlay).<br>
+                        <strong>fadeDuration</strong> – durasi animasi fade in/out (bisa diatur di Inspector).<br>
+                        <strong>displayDuration</strong> – durasi popup ditampilkan sebelum fade out.<br>
+                        <strong>activeRoutine</strong> – menyimpan referensi coroutine yang sedang berjalan untuk menghentikannya jika perlu.
+                    </td>
+                </tr>
+
+                <!-- 4. ShowWarning() -->
+                <tr>
+                    <td><span class="code-snip">public void ShowWarning(string message)<br>{<br>    if (messageText != null) messageText.text = message;<br>    if (activeRoutine != null) StopCoroutine(activeRoutine);<br>    activeRoutine = StartCoroutine(AnimatePopup());<br>    StartCoroutine(FlashRed());<br>}</span></td>
+                    <td><span class="func-name">ShowWarning()</span></td>
+                    <td class="desc">
+                        <strong>Fungsi:</strong> Menampilkan popup peringatan (error).
+                        <br>1. Set teks pesan.
+                        <br>2. Hentikan coroutine sebelumnya jika ada (mencegah konflik animasi).
+                        <br>3. Mulai coroutine <code>AnimatePopup()</code> untuk fade in/out.
+                        <br>4. Mulai coroutine <code>FlashRed()</code> untuk efek kilatan merah.
+                        <br>Dipanggil oleh <code>EvacuationManager</code> saat terjadi error (misal waktu habis, syarat belum terpenuhi).
+                    </td>
+                </tr>
+
+                <!-- 5. ShowSuccess() -->
+                <tr>
+                    <td><span class="code-snip">public void ShowSuccess(string message)<br>{<br>    if (messageText != null) messageText.text = message;<br>    if (activeRoutine != null) StopCoroutine(activeRoutine);<br>    activeRoutine = StartCoroutine(AnimatePopup());<br>}</span></td>
+                    <td><span class="func-name">ShowSuccess()</span></td>
+                    <td class="desc">
+                        <strong>Fungsi:</strong> Menampilkan popup sukses (tanpa flash merah).
+                        <br>1. Set teks pesan.
+                        <br>2. Hentikan coroutine sebelumnya jika ada.
+                        <br>3. Mulai coroutine <code>AnimatePopup()</code> untuk fade in/out.
+                        <br>Berbeda dengan <code>ShowWarning()</code>, tidak memicu <code>FlashRed()</code>.
+                    </td>
+                </tr>
+
+                <!-- 6. AnimatePopup() -->
+                <tr>
+                    <td><span class="code-snip">private IEnumerator AnimatePopup()<br>{<br>    float elapsed = 0f;<br>    while (elapsed < fadeDuration)<br>    {<br>        canvasGroup.alpha = Mathf.Lerp(0f, 1f, elapsed / fadeDuration);<br>        elapsed += Time.deltaTime;<br>        yield return null;<br>    }<br>    canvasGroup.alpha = 1f;<br>    yield return new WaitForSeconds(displayDuration);<br>    elapsed = 0f;<br>    while (elapsed < fadeDuration)<br>    {<br>        canvasGroup.alpha = Mathf.Lerp(1f, 0f, elapsed / fadeDuration);<br>        elapsed += Time.deltaTime;<br>        yield return null;<br>    }<br>    canvasGroup.alpha = 0f;<br>}</span></td>
+                    <td><span class="func-name">AnimatePopup() – Coroutine</span></td>
+                    <td class="desc">
+                        <strong>Logika animasi fade:</strong>
+                        <br>1. <strong>Fade in:</strong> alpha dari 0 ke 1 selama <code>fadeDuration</code> detik.
+                        <br>2. Tunggu selama <code>displayDuration</code> detik (popup terlihat penuh).
+                        <br>3. <strong>Fade out:</strong> alpha dari 1 ke 0 selama <code>fadeDuration</code> detik.
+                        <br>4. Set alpha = 0 (pastikan popup benar-benar tersembunyi).
+                        <br>Menggunakan <code>yield return null</code> untuk menunggu setiap frame.
+                    </td>
+                </tr>
+
+                <!-- 7. FlashRed() -->
+                <tr>
+                    <td><span class="code-snip">private IEnumerator FlashRed()<br>{<br>    if (flashImage == null) yield break;<br>    float duration = 0.2f, elapsed = 0f;<br>    while (elapsed < duration)<br>    {<br>        flashImage.color = new Color(1, 0, 0, Mathf.Lerp(0f, 0.6f, elapsed / duration));<br>        elapsed += Time.deltaTime;<br>        yield return null;<br>    }<br>    elapsed = 0f;<br>    while (elapsed < duration)<br>    {<br>        flashImage.color = new Color(1, 0, 0, Mathf.Lerp(0.6f, 0f, elapsed / duration));<br>        elapsed += Time.deltaTime;<br>        yield return null;<br>    }<br>    flashImage.color = new Color(1, 0, 0, 0);<br>}</span></td>
+                    <td><span class="func-name">FlashRed() – Coroutine</span></td>
+                    <td class="desc">
+                        <strong>Logika kilatan merah:</strong>
+                        <br>1. Jika <code>flashImage</code> null, hentikan coroutine (<code>yield break</code>).
+                        <br>2. <strong>Fade in merah:</strong> alpha dari 0 ke 0.6 selama 0.2 detik.
+                        <br>3. <strong>Fade out merah:</strong> alpha dari 0.6 ke 0 selama 0.2 detik.
+                        <br>4. Set alpha = 0 (pastikan flash hilang).
+                        <br>Efek ini menciptakan kilatan cepat di layar untuk menarik perhatian pemain saat terjadi error.
+                    </td>
+                </tr>
+
+                <!-- 8. Catatan penggunaan -->
+                <tr>
+                    <td><span class="code-snip">// Dipanggil dari EvacuationManager.ShowWarningPopup()</span></td>
+                    <td><span class="func-name">Integrasi</span></td>
+                    <td class="desc">Script ini biasanya dipasang pada objek "WarningPopupPanel" yang dibuat oleh <code>EvacuationSceneBuilder</code>. <code>EvacuationManager</code> memanggil <code>ShowWarning()</code> atau <code>ShowSuccess()</code> melalui referensi <code>warningPopupText</code> dan <code>warningCanvasGroup</code>.</td>
+                </tr>
+
+                <!-- 9. Manajemen coroutine -->
+                <tr>
+                    <td><span class="code-snip">// activeRoutine mencegah tumpang tindih animasi</span></td>
+                    <td><span class="func-name">Manajemen</span></td>
+                    <td class="desc">Variabel <code>activeRoutine</code> menyimpan coroutine yang sedang berjalan. Saat <code>ShowWarning()</code> atau <code>ShowSuccess()</code> dipanggil, coroutine lama dihentikan (<code>StopCoroutine</code>) sebelum yang baru dimulai. Mencegah tumpang tindih animasi jika popup dipanggil berulang kali.</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <span>📁 <strong>Path:</strong> Assets/Scripts/UTS_Dimas/WarningPopup.cs</span>
+        <span>🧑‍💻 Bagian dari sistem evakuasi UTS · Dimas</span>
+    </div>
+
+</div>
+</body>
+</html>

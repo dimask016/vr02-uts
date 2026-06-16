@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ButtonPulseEffect.cs – Penjelasan Kode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            padding: 2rem 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #21262d;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #58a6ff, #f0883e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .meta {
+            color: #8b949e;
+            font-size: 0.9rem;
+            background: #161b22;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #30363d;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            background: #161b22;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            min-width: 700px;
+        }
+
+        thead {
+            background: #0d1117;
+            border-bottom: 2px solid #30363d;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 0.9rem 1.2rem;
+            font-weight: 600;
+            color: #f0f6fc;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        thead th:first-child { width: 30%; }
+        thead th:nth-child(2) { width: 20%; }
+        thead th:last-child { width: 50%; }
+
+        tbody tr {
+            border-bottom: 1px solid #21262d;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #1c2128;
+        }
+
+        tbody td {
+            padding: 0.9rem 1.2rem;
+            vertical-align: top;
+        }
+
+        .code-snip {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.82rem;
+            background: #0d1117;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            color: #c9d1d9;
+            display: inline-block;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .func-name {
+            font-weight: 600;
+            color: #f0883e;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .desc {
+            color: #c9d1d9;
+            font-size: 0.92rem;
+        }
+
+        .desc strong {
+            color: #f0f6fc;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            background: #1f3a5f;
+            color: #58a6ff;
+            margin-right: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-ui { background: #1f3a2d; color: #7ee787; }
+
+        .footer {
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #21262d;
+            color: #8b949e;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            thead th, tbody td { padding: 0.6rem 0.8rem; }
+            .code-snip { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🔄 ButtonPulseEffect.cs</h1>
+        <span class="meta">✨ UI Effect · Runtime · 38 baris</span>
+    </div>
+
+    <!-- RINGKASAN -->
+    <div style="background:#161b22; border:1px solid #30363d; border-radius:12px; padding:1.2rem 1.8rem; margin-bottom:1.8rem;">
+        <p style="color:#c9d1d9; font-size:1rem;">
+            <strong>Fungsi utama:</strong> Membuat tombol UI berdenyut (pulse) secara terus-menerus dengan skala naik-turun
+            menggunakan <code>Mathf.PingPong</code>. Efek ini menarik perhatian pemain ke tombol interaktif,
+            sangat berguna untuk menandai stasiun yang sedang aktif atau harus diklik.
+        </p>
+    </div>
+
+    <!-- TABEL PENJELASAN -->
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>📌 Baris Kode (cuplikan)</th>
+                    <th>🎯 Fungsi / Metode</th>
+                    <th>📖 Penjelasan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 1. Deklarasi kelas & using -->
+                <tr>
+                    <td><span class="code-snip">using UnityEngine;<br>using UnityEngine.UI;<br>using System.Collections;</span></td>
+                    <td><span class="func-name">Namespace</span></td>
+                    <td class="desc">Mengimpor namespace yang diperlukan: <code>UnityEngine</code> untuk MonoBehaviour, <code>UnityEngine.UI</code> untuk Image, dan <code>System.Collections</code> untuk Coroutine (IEnumerator).</td>
+                </tr>
+
+                <!-- 2. Public fields -->
+                <tr>
+                    <td><span class="code-snip">public float pulseSpeed = 2f;<br>public float minScale = 0.95f;<br>public float maxScale = 1.05f;</span></td>
+                    <td><span class="func-name">Parameter Pulse</span></td>
+                    <td class="desc"><strong>pulseSpeed</strong> = kecepatan denyut (semakin tinggi semakin cepat). <strong>minScale</strong> dan <strong>maxScale</strong> adalah batas bawah dan atas skala saat berdenyut. Nilai default membuat tombol sedikit mengecil dan membesar.</td>
+                </tr>
+
+                <!-- 3. Private variables -->
+                <tr>
+                    <td><span class="code-snip">private Image image;<br>private Vector3 originalScale;<br>private Color originalColor;</span></td>
+                    <td><span class="func-name">Variabel Internal</span></td>
+                    <td class="desc">Menyimpan referensi komponen <code>Image</code>, skala asli tombol, dan warna asli (meskipun warna tidak digunakan dalam efek ini, disimpan untuk kemungkinan pengembangan lebih lanjut).</td>
+                </tr>
+
+                <!-- 4. Start() -->
+                <tr>
+                    <td><span class="code-snip">void Start()<br>{<br>    image = GetComponent&lt;Image&gt;();<br>    originalScale = transform.localScale;<br>    if (image != null) originalColor = image.color;<br>    StartCoroutine(Pulse());<br>}</span></td>
+                    <td><span class="func-name">Start()</span></td>
+                    <td class="desc">Inisialisasi: mengambil komponen <code>Image</code>, menyimpan skala dan warna asli, lalu memulai coroutine <code>Pulse()</code> yang akan berjalan terus menerus selama objek aktif.</td>
+                </tr>
+
+                <!-- 5. IEnumerator Pulse() -->
+                <tr>
+                    <td><span class="code-snip">IEnumerator Pulse()<br>{<br>    float t = 0f;<br>    while (true)<br>    {<br>        t += Time.deltaTime * pulseSpeed;<br>        float lerp = Mathf.PingPong(t, 1f);<br>        float scale = Mathf.Lerp(minScale, maxScale, lerp);<br>        transform.localScale = originalScale * scale;<br>        yield return null;<br>    }<br>}</span></td>
+                    <td><span class="func-name">Pulse() – Coroutine</span></td>
+                    <td class="desc">
+                        <strong>Logika denyut:</strong> 
+                        <br>1. <code>t</code> bertambah setiap frame berdasarkan <code>pulseSpeed</code>.
+                        <br>2. <code>Mathf.PingPong(t, 1f)</code> menghasilkan nilai osilasi antara 0 dan 1 (seperti gelombang segitiga).
+                        <br>3. <code>Mathf.Lerp(minScale, maxScale, lerp)</code> mengubah nilai osilasi menjadi skala antara <code>minScale</code> dan <code>maxScale</code>.
+                        <br>4. Skala tombol diperbarui setiap frame (<code>yield return null</code>).
+                        <br>Loop <code>while (true)</code> membuat efek berjalan terus menerus.
+                    </td>
+                </tr>
+
+                <!-- 6. Perbedaan dengan ButtonClickEffect -->
+                <tr>
+                    <td><span class="code-snip">// Efek independen dari interaksi</span></td>
+                    <td><span class="func-name">Karakteristik</span></td>
+                    <td class="desc">Berbeda dengan <code>ButtonClickEffect</code> yang responsif terhadap input, <code>ButtonPulseEffect</code> bekerja secara <strong>otomatis dan terus-menerus</strong> tanpa perlu interaksi pengguna. Cocok untuk menarik perhatian ke tombol yang penting.</td>
+                </tr>
+
+                <!-- 7. Catatan penggunaan -->
+                <tr>
+                    <td><span class="code-snip">// Dapat dikombinasikan dengan ButtonClickEffect</span></td>
+                    <td><span class="func-name">Kombinasi</span></td>
+                    <td class="desc">Kedua efek (ClickEffect dan PulseEffect) dapat dipasang pada tombol yang sama. <code>ButtonPulseEffect</code> akan membuat tombol berdenyut, sementara <code>ButtonClickEffect</code> akan menambahkan efek hover/press di atasnya.</td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <span>📁 <strong>Path:</strong> Assets/Scripts/UTS_Dimas/ButtonPulseEffect.cs</span>
+        <span>🧑‍💻 Bagian dari sistem evakuasi UTS · Dimas</span>
+    </div>
+
+</div>
+</body>
+</html>

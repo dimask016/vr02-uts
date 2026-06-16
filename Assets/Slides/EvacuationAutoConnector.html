@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EvacuationAutoConnector.cs – Penjelasan Kode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            padding: 2rem 1.5rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #21262d;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #58a6ff, #f0883e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header .meta {
+            color: #8b949e;
+            font-size: 0.9rem;
+            background: #161b22;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            border: 1px solid #30363d;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #30363d;
+            background: #161b22;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            min-width: 700px;
+        }
+
+        thead {
+            background: #0d1117;
+            border-bottom: 2px solid #30363d;
+        }
+
+        thead th {
+            text-align: left;
+            padding: 0.9rem 1.2rem;
+            font-weight: 600;
+            color: #f0f6fc;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+
+        thead th:first-child { width: 30%; }
+        thead th:nth-child(2) { width: 20%; }
+        thead th:last-child { width: 50%; }
+
+        tbody tr {
+            border-bottom: 1px solid #21262d;
+            transition: background 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #1c2128;
+        }
+
+        tbody td {
+            padding: 0.9rem 1.2rem;
+            vertical-align: top;
+        }
+
+        .code-snip {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.82rem;
+            background: #0d1117;
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            color: #c9d1d9;
+            display: inline-block;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .func-name {
+            font-weight: 600;
+            color: #f0883e;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+        }
+
+        .desc {
+            color: #c9d1d9;
+            font-size: 0.92rem;
+        }
+
+        .desc strong {
+            color: #f0f6fc;
+        }
+
+        .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.7rem;
+            border-radius: 20px;
+            background: #1f3a5f;
+            color: #58a6ff;
+            margin-right: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-helper { background: #2d2d2d; color: #b1b1b1; }
+
+        .footer {
+            margin-top: 2.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #21262d;
+            color: #8b949e;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            .header h1 { font-size: 1.5rem; }
+            table { font-size: 0.85rem; }
+            thead th, tbody td { padding: 0.6rem 0.8rem; }
+            .code-snip { font-size: 0.75rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>🔌 EvacuationAutoConnector.cs</h1>
+        <span class="meta">🔧 Auto-Connect · Edit-time · 54 baris</span>
+    </div>
+
+    <!-- RINGKASAN -->
+    <div style="background:#161b22; border:1px solid #30363d; border-radius:12px; padding:1.2rem 1.8rem; margin-bottom:1.8rem;">
+        <p style="color:#c9d1d9; font-size:1rem;">
+            <strong>Fungsi utama:</strong> Menghubungkan secara otomatis semua komponen UI (TextMeshPro, Image, CanvasGroup)
+            ke <code>EvacuationManager</code> berdasarkan nama GameObject. Berjalan hanya di <strong>Edit Mode</strong>
+            (bukan saat Play) berkat atribut <code>[ExecuteAlways]</code> dan preprocessor <code>#if UNITY_EDITOR</code>.
+            Memudahkan proses setup scene tanpa perlu drag-drop manual.
+        </p>
+    </div>
+
+    <!-- TABEL PENJELASAN -->
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>📌 Baris Kode (cuplikan)</th>
+                    <th>🎯 Fungsi / Metode</th>
+                    <th>📖 Penjelasan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 1. Atribut ExecuteAlways -->
+                <tr>
+                    <td><span class="code-snip">[ExecuteAlways]</span></td>
+                    <td><span class="func-name">Atribut</span></td>
+                    <td class="desc">Menandai bahwa script ini akan berjalan baik di <strong>Edit Mode</strong> maupun Play Mode. Memungkinkan metode <code>Start()</code> dipanggil di editor saat objek diaktifkan atau scene dimuat.</td>
+                </tr>
+
+                <!-- 2. Deklarasi kelas -->
+                <tr>
+                    <td><span class="code-snip">public class EvacuationAutoConnector : MonoBehaviour</span></td>
+                    <td><span class="func-name">Deklarasi Kelas</span></td>
+                    <td class="desc">Kelas turunan <code>MonoBehaviour</code> yang dapat dipasang sebagai komponen pada GameObject mana pun di scene (biasanya pada <code>EvacuationManager</code> atau objek kosong).</td>
+                </tr>
+
+                <!-- 3. Start() dengan preprocessor -->
+                <tr>
+                    <td><span class="code-snip">void Start()<br>{<br>    #if UNITY_EDITOR<br>    if (!Application.isPlaying)<br>    {<br>        ConnectComponents();<br>    }<br>    #endif<br>}</span></td>
+                    <td><span class="func-name">Start()</span></td>
+                    <td class="desc">
+                        <strong>Logika:</strong> 
+                        <br>1. Preprocessor <code>#if UNITY_EDITOR</code> memastikan kode hanya dieksekusi di dalam Editor Unity (tidak di build).
+                        <br>2. <code>!Application.isPlaying</code> memastikan script hanya berjalan saat <strong>Edit Mode</strong>, bukan saat Play.
+                        <br>3. Jika kondisi terpenuhi, panggil <code>ConnectComponents()</code> untuk menghubungkan semua komponen.
+                    </td>
+                </tr>
+
+                <!-- 4. ConnectComponents() – awal -->
+                <tr>
+                    <td><span class="code-snip">void ConnectComponents()<br>{<br>    EvacuationManager evac = FindObjectOfType&lt;EvacuationManager&gt;();<br>    if (evac == null) return;</span></td>
+                    <td><span class="func-name">ConnectComponents()</span></td>
+                    <td class="desc">Mencari <code>EvacuationManager</code> di scene. Jika tidak ditemukan, hentikan eksekusi (return) karena tidak ada yang perlu dihubungkan.</td>
+                </tr>
+
+                <!-- 5. Mencari semua komponen UI -->
+                <tr>
+                    <td><span class="code-snip">TextMeshProUGUI[] allTexts = FindObjectsOfType&lt;TextMeshProUGUI&gt;();<br>Image[] allImages = FindObjectsOfType&lt;Image&gt;();<br>CanvasGroup[] allCanvasGroups = FindObjectsOfType&lt;CanvasGroup&gt;();</span></td>
+                    <td><span class="func-name">Find Components</span></td>
+                    <td class="desc">Mengambil semua komponen <code>TextMeshProUGUI</code>, <code>Image</code>, dan <code>CanvasGroup</code> yang ada di seluruh scene (termasuk yang tidak aktif).</td>
+                </tr>
+
+                <!-- 6. Loop TextMeshPro -->
+                <tr>
+                    <td><span class="code-snip">foreach (var text in allTexts)<br>{<br>    if (text.gameObject.name == "Txt_ID") evac.txtObjectiveID = text;<br>    if (text.gameObject.name == "Txt_Alarm") evac.txtObjectiveAlarm = text;<br>    if (text.gameObject.name == "Txt_Door") evac.txtObjectiveDoor = text;<br>    if (text.gameObject.name == "Txt_Exit") evac.txtObjectiveExit = text;<br>    if (text.gameObject.name == "TimerText") evac.txtTimer = text;<br>    if (text.gameObject.name == "StatusText") evac.txtFeedback = text;<br>    if (text.gameObject.name == "PopupText") evac.warningPopupText = text;<br>}</span></td>
+                    <td><span class="func-name">Connect Text</span></td>
+                    <td class="desc">Iterasi semua <code>TextMeshProUGUI</code> dan mencocokkan <code>gameObject.name</code> dengan nama yang diharapkan. Jika cocok, assign ke field yang sesuai di <code>EvacuationManager</code>.</td>
+                </tr>
+
+                <!-- 7. Loop Image -->
+                <tr>
+                    <td><span class="code-snip">foreach (var image in allImages)<br>{<br>    if (image.gameObject.name == "Light_ID") evac.mapIDCard = image;<br>    if (image.gameObject.name == "Light_Alarm") evac.mapAlarm = image;<br>    if (image.gameObject.name == "Light_Door") evac.mapDoor = image;<br>    if (image.gameObject.name == "Light_Exit") evac.mapExit = image;<br>    if (image.gameObject.name == "WarningFlash") evac.flashImage = image;<br>}</span></td>
+                    <td><span class="func-name">Connect Image</span></td>
+                    <td class="desc">Iterasi semua <code>Image</code> dan mencocokkan nama GameObject dengan ikon minimap (<code>Light_ID</code>, <code>Light_Alarm</code>, dll.) serta <code>WarningFlash</code> untuk efek kilatan.</td>
+                </tr>
+
+                <!-- 8. Loop CanvasGroup -->
+                <tr>
+                    <td><span class="code-snip">foreach (var cg in allCanvasGroups)<br>{<br>    if (cg.gameObject.name == "WarningPopupPanel")<br>        evac.warningCanvasGroup = cg;<br>}</span></td>
+                    <td><span class="func-name">Connect CanvasGroup</span></td>
+                    <td class="desc">Iterasi semua <code>CanvasGroup</code> dan mencari yang bernama <code>WarningPopupPanel</code> untuk diassign ke <code>evac.warningCanvasGroup</code> (digunakan untuk mengontrol alpha popup).</td>
+                </tr>
+
+                <!-- 9. Log sukses -->
+                <tr>
+                    <td><span class="code-snip">Debug.Log("EvacuationAutoConnector: Components connected successfully!");</span></td>
+                    <td><span class="func-name">Log</span></td>
+                    <td class="desc">Mencetak pesan ke Console Unity sebagai konfirmasi bahwa proses koneksi berhasil dijalankan.</td>
+                </tr>
+
+                <!-- 10. Catatan penggunaan -->
+                <tr>
+                    <td><span class="code-snip">// (seluruh kode)</span></td>
+                    <td><span class="func-name">Catatan Penting</span></td>
+                    <td class="desc">
+                        <strong>1.</strong> Script ini <strong>tidak</strong> berjalan di build/standalone karena preprocessor <code>#if UNITY_EDITOR</code>.
+                        <br><strong>2.</strong> Sangat berguna untuk scene yang dibangun secara prosedural (seperti oleh <code>EvacuationSceneBuilder</code>) agar referensi UI otomatis terhubung tanpa intervensi manual.
+                        <br><strong>3.</strong> Jika ada perubahan nama GameObject, script ini harus diperbarui agar tetap berfungsi.
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <span>📁 <strong>Path:</strong> Assets/Scripts/UTS_Dimas/EvacuationAutoConnector.cs</span>
+        <span>🧑‍💻 Bagian dari sistem evakuasi UTS · Dimas</span>
+    </div>
+
+</div>
+</body>
+</html>
