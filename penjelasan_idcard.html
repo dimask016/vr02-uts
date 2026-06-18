@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penjelasan Per Baris UTS_IDCardScript.cs</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f6f7;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 5px solid #e74c3c;
+        }
+        h1 { margin: 0; font-size: 28px; }
+        h2 { color: #2c3e50; margin-top: 40px; border-bottom: 2px solid #e74c3c; padding-bottom: 8px; }
+        .intro {
+            background-color: #fdedec;
+            padding: 15px;
+            border-left: 5px solid #e74c3c;
+            border-radius: 4px;
+            margin-bottom: 25px;
+        }
+        .code-block {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin-bottom: 10px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .explanation {
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: 6px;
+            border: 1px solid #e1e8ed;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .explanation ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .explanation li {
+            margin-bottom: 8px;
+        }
+        code.inline-code {
+            background-color: #f1f2f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #e74c3c;
+            font-size: 0.95em;
+        }
+        .keyword { color: #569cd6; font-weight: bold; }
+        .type { color: #4ec9b0; }
+        .method { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .attr { color: #bdd631; }
+        .var { color: #9cdcfe; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Bedah Kode Per Baris</h1>
+        <p><strong>Nama File:</strong> penjelasan_idcard.html</p>
+        <p>Analisis Detail Skrip Interaksi Kartu Identitas (<code>UTS_IDCardScript.cs</code>)</p>
+    </header>
+
+    <div class="intro">
+        <p>Halaman ini berisi penjelasan lengkap baris demi baris dari skrip <code>UTS_IDCardScript.cs</code>. Dokumentasi ini dibuat untuk mempermudah pemahaman logika interaksi tombol UI, efek visual rotasi objek, serta hubungannya dengan skrip pengontrol utama game.</p>
+    </div>
+
+    <!-- SEKSI 1 -->
+    <h2>1. Library/Namespace Imports</h2>
+    <div class="code-block">
+        <span class="keyword">using</span> UnityEngine;<br>
+        <span class="keyword">using</span> UnityEngine.UI;
+    </div>
+    <div class="explanation">
+        <p>Mengimpor pustaka (library) bawaan Unity yang diperlukan oleh skrip ini:</p>
+        <ul>
+            <li><code>using UnityEngine;</code> : Library dasar wajib Unity untuk mengenali komponen-komponen dasar seperti <code class="inline-code">MonoBehaviour</code>, <code class="inline-code">GameObject</code>, <code class="inline-code">Time</code>, dan fungsi bawaan engine lainnya[cite: 3].</li>
+            <li><code>using UnityEngine.UI;</code> : Digunakan agar skrip mengenali dan dapat mengendalikan komponen UI interaktif klasik bawaan Unity, yaitu <code class="inline-code">Button</code>[cite: 3].</li>
+        </ul>
+    </div>
+
+    <!-- SEKSI 2 -->
+    <h2>2. Deklarasi Kelas & Variabel Komponen (Serialized Fields)</h2>
+    <div class="code-block">
+        <span class="keyword">public class</span> <span class="type">UTS_IDCardScript</span> : <span class="type">MonoBehaviour</span><br>
+        {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">GameObject</span> <span class="var">_idCard</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">Button</span> <span class="var">_idCardButtonA</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">Button</span> <span class="var">_idCardButtonB</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">UTS_GameController</span> <span class="var">_gameController</span>;
+    </div>
+    <div class="explanation">
+        <ul>
+            <li><code>public class UTS_IDCardScript : MonoBehaviour</code> : Deklarasi kelas bernama <code>UTS_IDCardScript</code> yang diturunkan dari <code class="inline-code">MonoBehaviour</code> agar skrip ini bisa ditempelkan sebagai komponen pada objek di Unity[cite: 3].</li>
+            <li>Atribut <code>[SerializeField]</code> digunakan untuk memaksa variabel privat di bawah ini agar tetap muncul di jendela Inspector Unity, sehingga kita bisa menghubungkan objeknya secara langsung dengan metode *drag-and-drop*[cite: 3]:
+                <ul>
+                    <li><code>_idCard</code> : Menyimpan referensi objek fisik atau visual 3D dari kartu identitas di dalam game[cite: 3].</li>
+                    <li><code>_idCardButtonA</code> dan <code>_idCardButtonB</code> : Menyimpan referensi dua buah komponen UI tombol (Button) yang akan diklik oleh pemain untuk berinteraksi dengan kartu[cite: 3].</li>
+                    <li><code>_gameController</code> : Menyimpan referensi ke skrip master <code>UTS_GameController</code> untuk mengirimkan data perubahan status game[cite: 3].</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <!-- SEKSI 3 -->
+    <h2>3. Registrasi Event Klik Tombol (Fungsi Start)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Start is called once before the first execution of Update after the MonoBehaviour is created</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">Start</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_idCardButtonA</span>.<span class="var">onClick</span>.<span class="method">AddListener</span>(<span class="method">OnIDCardClick</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_idCardButtonB</span>.<span class="var">onClick</span>.<span class="method">AddListener</span>(<span class="method">OnIDCardClick</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Fungsi bawaan Unity yang dijalankan otomatis satu kali di awal permainan[cite: 3]:</p>
+        <ul>
+            <li><code>onClick.AddListener(OnIDCardClick);</code> : Mendaftarkan atau mengikat fungsi <code>OnIDCardClick</code> ke dalam sistem event klik tombol[cite: 3]. </li>
+            <li>Artinya, setiap kali pemain mengklik <code>_idCardButtonA</code> ataupun <code>_idCardButtonB</code> pada antarmuka game, Unity akan langsung memanggil dan menjalankan fungsi logika <code>OnIDCardClick</code> secara otomatis[cite: 3].</li>
+        </ul>
+    </div>
+
+    <!-- SEKSI 4 -->
+    <h2>4. Efek Visual Animasi Berputar (Fungsi Update)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Update is called once per frame</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">Update</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">transform</span>.<span class="method">Rotate</span>(0f, 90f * <span class="type">Time</span>.<span class="var">deltaTime</span>, 0f);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Fungsi bawaan Unity yang dieksekusi terus-menerus di setiap frame permainan[cite: 3]:</p>
+        <ul>
+            <li><code>transform.Rotate(0f, 90f * Time.deltaTime, 0f);</code> : Berfungsi untuk memutar objek kartu identitas ini pada sumbu Y (horisontal) sebesar 90 derajat per detik[cite: 3].</li>
+            <li><code>Time.deltaTime</code> : Sangat penting digunakan sebagai faktor pengali agar kecepatan rotasi objek tetap berjalan konstan dan mulus di berbagai perangkat komputer, terlepas dari perbedaan performa FPS (*Frames Per Second*) masing-masing perangkat[cite: 3].</li>
+        </ul>
+    </div>
+
+    <!-- SEKSI 5 -->
+    <h2>5. Logika Pengambilan Kartu (Fungsi OnIDCardClick)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public void</span> <span class="method">OnIDCardClick</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_gameController</span>.<span class="method">SetHasKeyCard</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_idCard</span>.<span class="method">SetActive</span>(<span class="keyword">false</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        }
+    </div>
+    <div class="explanation">
+        <p>Fungsi publik inti yang akan dijalankan ketika salah satu tombol interaksi kartu diklik oleh pemain[cite: 3]:</p>
+        <ul>
+            <li><code>_gameController.SetHasKeyCard();</code> : Menghubungi skrip master game controller untuk menjalankan fungsi <code>SetHasKeyCard()</code>, yang akan mengubah status permainan bahwa pemain kini telah berhasil mengantongi kartu kunci[cite: 3].</li>
+            <li><code>_idCard.SetActive(false);</code> : Menonaktifkan objek kartu identitas di dalam dunia permainan[cite: 3]. Efeknya, kartu tersebut akan langsung menghilang dari layar dan tidak bisa diinteraksi lagi karena dianggap sudah diambil[cite: 3].</li>
+        </ul>
+    </div>
+
+</body>
+</html>

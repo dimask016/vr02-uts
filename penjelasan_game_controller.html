@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penjelasan Per Baris UTS_GameController.cs</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f6f7;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 5px solid #3498db;
+        }
+        h1 { margin: 0; font-size: 28px; }
+        h2 { color: #2c3e50; margin-top: 40px; border-bottom: 2px solid #3498db; padding-bottom: 8px; }
+        .intro {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+            border-radius: 4px;
+            margin-bottom: 25px;
+        }
+        .code-block {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin-bottom: 10px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .explanation {
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: 6px;
+            border: 1px solid #e1e8ed;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .explanation ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .explanation li {
+            margin-bottom: 8px;
+        }
+        code.inline-code {
+            background-color: #f1f2f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #e74c3c;
+            font-size: 0.95em;
+        }
+        .keyword { color: #569cd6; font-weight: bold; }
+        .type { color: #4ec9b0; }
+        .method { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; font-style: italic; }
+        .attr { color: #bdd631; }
+        .var { color: #9cdcfe; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Bedah Kode Per Baris</h1>
+        <p><strong>Nama File:</strong> penjelasan_game_controller.html</p>
+        <p>Analisis Detail Skrip Pusat Logika Permainan (<code>UTS_GameController.cs</code>)</p>
+    </header>
+
+    <div class="intro">
+        <p>Halaman ini berisi penjelasan lengkap baris demi baris dari skrip <code>UTS_GameController.cs</code>. Dokumentasi ini dibuat untuk mempermudah pemahaman logika *State Machine*, pengelolaan UI TextMeshPro, serta sistem validasi pintu evakuasi di Unity.</p>
+    </div>
+
+    <h2>1. Library/Namespace Imports</h2>
+    <div class="code-block">
+        <span class="keyword">using</span> UnityEngine;<br>
+        <span class="keyword">using</span> UnityEngine.UI;<br>
+        <span class="keyword">using</span> UnityEngine.SceneManagement;<br>
+        <span class="keyword">using</span> TMPro;<br>
+        <span class="keyword">using</span> System.Collections;
+    </div>
+    <div class="explanation">
+        <p>Mengimpor pustaka (library) eksternal yang dibutuhkan oleh skrip:</p>
+        <ul>
+            <li><code>using UnityEngine;</code> : Library dasar Unity untuk mengenali komponen seperti <code class="inline-code">MonoBehaviour</code>, <code class="inline-code">GameObject</code>, dan fungsi bawaan engine.</li>
+            <li><code>using UnityEngine.UI;</code> : Digunakan untuk mengendalikan komponen UI klasik Unity seperti komponen <code class="inline-code">Image</code>.</li>
+            <li><code>using UnityEngine.SceneManagement;</code> : Dibutuhkan untuk memanipulasi perpindahan atau pemuatan ulang level/scene game.</li>
+            <li><code>using TMPro;</code> : Digunakan agar skrip mengenali komponen teks modern berkemampuan tinggi, yaitu <code class="inline-code">TextMeshProUGUI</code>.</li>
+            <li><code>using System.Collections;</code> : Library standar C# yang wajib disertakan agar fitur jeda waktu (Coroutine / <code class="inline-code">IEnumerator</code>) bisa berjalan.</li>
+        </ul>
+    </div>
+
+    <h2>2. Deklarasi Kelas & Variabel Pintu</h2>
+    <div class="code-block">
+        <span class="keyword">public class</span> <span class="type">UTS_GameController</span> : <span class="type">MonoBehaviour</span><br>
+        {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">Header</span> (<span class="string">"Doors"</span>)]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private bool</span> <span class="var">securityOpen</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private bool</span> <span class="var">corridorOpen</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private bool</span> <span class="var">officeOpen</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private bool</span> <span class="var">controlRoomOpen</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private bool</span> <span class="var">exitOpen</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public float</span> <span class="var">autoCloseDelay</span> = 5f;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private float</span> <span class="var">openTimer</span> = 0f;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> <span class="type">Color</span> <span class="var">accessColor</span> = <span class="keyword">new</span> <span class="type">Color</span>(0f, 1f, 0f, 1f);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> <span class="type">Color</span> <span class="var">deniedColor</span> = <span class="keyword">new</span> <span class="type">Color</span>(1f, 0f, 0f, 1f);
+    </div>
+    <div class="explanation">
+        <ul>
+            <li><code>public class UTS_GameController...</code> : Deklarasi blueprint kelas utama bernama sesuai file, diturunkan dari <code class="inline-code">MonoBehaviour</code> agar bisa ditempelkan ke objek game.</li>
+            <li><code>[Header("Doors")]</code> : Perintah dekorator untuk membuat judul bagian/seksi pembatas di dalam jendela Inspector Unity.</li>
+            <li><code>private bool ...Open;</code> : Variabel boolean (benar/salah) tersembunyi untuk mencatat status buka/tutup aktual dari masing-masing pintu fisik.</li>
+            <li><code>autoCloseDelay = 5f;</code> : Menentukan variabel penentu waktu tunggu (5 detik) sebelum fungsi penutup pintu otomatis mengeksekusi perintahnya.</li>
+            <li><code>openTimer</code> : Variabel penghitung waktu (saat ini disimpan untuk persiapan fitur atau ekspansi sistem ke depan).</li>
+            <li><code>accessColor / deniedColor</code> : Inisialisasi data warna RGBA statis untuk tanda indikator panel. Warna Hijau murni untuk akses disetujui, dan Merah murni untuk akses ditolak.</li>
+        </ul>
+    </div>
+
+    <h2>3. Logika Variabel Objektif (Game State)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">Header</span> (<span class="string">"Game Objective"</span>)]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private bool</span> <span class="var">hasKeyCard</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private bool</span> <span class="var">alarmActive</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private bool</span> <span class="var">exitDoorActive</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private bool</span> <span class="var">isEvacuationComplete</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private bool</span> <span class="var">gameOver</span>;
+    </div>
+    <div class="explanation">
+        <p>Kumpulan data boolean privat penentu alur perkembangan misi (Quest State):</p>
+        <ul>
+            <li><code>hasKeyCard</code> : Bernilai <code class="inline-code">true</code> jika pemain telah mengumpulkan kartu identitas/ID Card.</li>
+            <li><code>alarmActive</code> : Menandakan apakah tuas alarm di ruang keamanan sudah dinyalakan.</li>
+            <li><code>exitDoorActive</code> : Menandakan status pembukaan kunci utama pintu darurat di Control Room.</li>
+            <li><code>isEvacuationComplete</code> : Status akhir yang dipicu sesaat setelah pemain mencapai zona aman/finish.</li>
+            <li><code>gameOver</code> : Flag penentu untuk membekukan input dan pergerakan ketika permainan berakhir (baik menang/kalah).</li>
+        </ul>
+    </div>
+
+    <h2>4. Deklarasi Slot UI (Serialized Fields)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">Header</span> (<span class="string">"UI Text"</span>)]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">TextMeshProUGUI</span> <span class="var">_txtObjectiveIDCard</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">TextMeshProUGUI</span> <span class="var">_txtObjectiveAlarm</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">TextMeshProUGUI</span> <span class="var">_txtObjectiveExitDoor</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">TextMeshProUGUI</span> <span class="var">_txtObjectiveExit</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">TextMeshProUGUI</span> <span class="var">_txtStatus</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">TextMeshProUGUI</span> <span class="var">_txtTimer</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">TextMeshProUGUI</span> <span class="var">_txtGameOver</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">CanvasGroup</span> <span class="var">_warningCanvasGroup</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">TextMeshProUGUI</span> <span class="var">_warningPopupText</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">Image</span> <span class="var">_flashImage</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">Image</span> <span class="var">_mapIDCard</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">Image</span> <span class="var">_mapAlarm</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">Image</span> <span class="var">_mapDoor</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">Image</span> <span class="var">_mapExit</span>;
+    </div>
+    <div class="explanation">
+        <p>Atribut <code>[SerializeField]</code> memaksa variabel privat agar tampil di Inspector Unity untuk dihubungkan secara visual:</p>
+        <ul>
+            <li><code>_txtObjective...</code> : Slot untuk memasukkan teks daftar centang misi di layar pemain.</li>
+            <li><code>_txtStatus</code> & <code>_txtTimer</code> : Menangani teks pemandu instruksi dinamis dan hitung mundur sisa waktu.</li>
+            <li><code>_warningCanvasGroup</code> : Panel UI popup peringatan yang dikontrol nilai transparansinya (Alpha).</li>
+            <li><code>_flashImage</code> : Gambar transparan satu layar penuh untuk efek kilatan cahaya merah/hijau.</li>
+            <li><code>_map...</code> : Gambar indikator/ikon lokasi objektif yang menempel pada UI peta mini permainan.</li>
+        </ul>
+    </div>
+
+    <h2>5. Konfigurasi Awal (Fungsi Start)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">Start</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">hasKeyCard</span> = <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">alarmActive</span> = <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">exitDoorActive</span> = <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">isEvacuationComplete</span> = <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">gameOver</span> = <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_txtGameOver</span>.<span class="var">color</span> = <span class="keyword">new</span> <span class="type">Color</span>(0f, 0f, 0f, 0f);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">UpdateChecklistUI</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">UpdateMapUI</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">_warningCanvasGroup</span> != <span class="keyword">null</span>) <span class="var">_warningCanvasGroup</span>.<span class="var">alpha</span> = 0f;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Eksekusi otomatis satu kali di awal game:</p>
+        <ul>
+            <li>Menyetel ulang seluruh kondisi state misi ke status awal permainan (<code class="inline-code">false</code>).</li>
+            <li>Menyembunyikan tulisan Game Over dari layar dengan membuat warnanya transparan total (Alpha = 0).</li>
+            <li>Memanggil fungsi sinkronisasi UI agar teks misi dan peta langsung menampilkan visual default yang sesuai.</li>
+            <li><code>if (_warningCanvasGroup != null)</code> : Proteksi dari error *NullReferenceException* (jika lupa memasang objek di Inspector), dilanjutkan menyembunyikan panel peringatan (<code class="inline-code">alpha = 0f</code>).</li>
+        </ul>
+    </div>
+
+    <h2>6. Loop Validasi Game Over (Fungsi Update)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">Update</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">gameOver</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Time</span>.<span class="var">timeScale</span> = 0f;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="type">Input</span>.<span class="method">GetKeyDown</span>(<span class="type">KeyCode</span>.<span class="var">Return</span>) || <span class="type">Input</span>.<span class="method">GetKeyDown</span>(<span class="type">KeyCode</span>.<span class="var">KeypadEnter</span>))<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">RestartGame</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Berjalan terus menerus setiap frame permainan:</p>
+        <ul>
+            <li>Mengecek jika variabel <code class="inline-code">gameOver</code> aktif, maka skala waktu internal game dihentikan total (<code class="inline-code">Time.timeScale = 0f</code>), membekukan seluruh simulasi fisik dan mekanik game.</li>
+            <li>Dalam keadaan beku tersebut, skrip mendeteksi jika pemain menekan tombol **Enter** utama (<code class="inline-code">Return</code>) atau Enter area numpad (<code class="inline-code">KeypadEnter</code>) untuk segera memicu fungsi muat ulang permainan.</li>
+        </ul>
+    </div>
+
+    <h2>7. Interaksi & Validasi Pembukaan Pintu (ToggleIsOpen)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public void</span> <span class="method">ToggleIsOpen</span>(<span class="keyword">string</span> <span class="var">door</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"corridor"</span>) <span class="var">corridorOpen</span> = !<span class="var">corridorOpen</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"security"</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(!<span class="var">hasKeyCard</span>) <span class="method">ShowWarningPopup</span>(<span class="string">"Take ID Card First!"</span>, <span class="keyword">true</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">securityOpen</span> = (<span class="var">hasKeyCard</span>) ? !<span class="var">securityOpen</span> : <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"office"</span>) <span class="var">officeOpen</span> = !<span class="var">officeOpen</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"control"</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(!<span class="var">hasKeyCard</span>) <span class="method">ShowWarningPopup</span>(<span class="string">"Take ID Card First!"</span>, <span class="keyword">true</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(!<span class="var">alarmActive</span>) <span class="method">ShowWarningPopup</span>(<span class="string">"Activate Alarm First!"</span>, <span class="keyword">true</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">controlRoomOpen</span> = (<span class="var">hasKeyCard</span> && <span class="var">alarmActive</span>) ? !<span class="var">controlRoomOpen</span> : <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"exit"</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(!<span class="var">hasKeyCard</span>) <span class="method">ShowWarningPopup</span>(<span class="string">"Take ID Card First!"</span>, <span class="keyword">true</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(!<span class="var">alarmActive</span>) <span class="method">ShowWarningPopup</span>(<span class="string">"Activate Alarm First!"</span>, <span class="keyword">true</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(!<span class="var">exitDoorActive</span>) <span class="method">ShowWarningPopup</span>(<span class="string">"Activate Exit First!"</span>, <span class="keyword">true</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">exitOpen</span> = (<span class="var">hasKeyCard</span> && <span class="var">alarmActive</span> && <span class="var">exitDoorActive</span>) ? !<span class="var">exitOpen</span> : <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">StartCoroutine</span>(<span class="method">closeDoor</span>(<span class="var">door</span>));<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Fungsi publik utama untuk menerima perintah pembukaan pintu berdasarkan nama ID string parameter:</p>
+        <ul>
+            <li>Pintu <code>corridor</code> dan <code>office</code> tidak memiliki prasyarat, status langsung dibalik (terbuka/tertutup) lewat logika tanda seru (!).</li>
+            <li>Pintu <code>security</code> mengecek status kepemilikan kartu. Pernyataan Ternary <code class="inline-code">(hasKeyCard) ? !securityOpen : false</code> berarti: jika kartu dipegang, balikkan status pintu, jika tidak ada kartu, paksa pintu tetap terkunci rapat (<code class="inline-code">false</code>).</li>
+            <li>Pintu <code>control</code> dan <code>exit</code> memberlakukan sistem pengecekan berantai berlapis. Jika salah satu quest melompati urutan, popup peringatan kegagalan khusus akan ditampilkan.</li>
+            <li><code>StartCoroutine(closeDoor(door));</code> : Di baris akhir, fungsi menyalakan sistem timer otomatis agar pintu yang baru terbuka bisa menutup sendiri beberapa saat kemudian.</li>
+        </ul>
+    </div>
+
+    <h2>8. Sistem Penutup Pintu Otomatis (Coroutine)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">IEnumerator</span> <span class="method">closeDoor</span>(<span class="keyword">string</span> <span class="var">door</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">yield return new</span> <span class="type">WaitForSeconds</span>(<span class="var">autoCloseDelay</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"corridor"</span>) <span class="var">corridorOpen</span> = <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"security"</span>) <span class="var">securityOpen</span> = <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"office"</span>) <span class="var">officeOpen</span> = <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"control"</span>) <span class="var">controlRoomOpen</span> = <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"exit"</span>) <span class="var">exitOpen</span> = <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <ul>
+            <li><code>yield return new WaitForSeconds(autoCloseDelay);</code> : Baris instruksi jeda yang memerintahkan Unity untuk menunda pemrosesan baris berikutnya selama nilai variabel penentu (5 detik).</li>
+            <li>Baris selanjutnya mendeteksi nama pintu asal yang dipanggil, lalu secara paksa menyetel nilai booleannya kembali ke <code class="inline-code">false</code> agar animasi/status fisik pintu tertutup kembali secara otomatis demi keamanan area.</li>
+        </ul>
+    </div>
+
+    <h2>9. Fungsi Getter Status & Warna Indikator Pintu</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public bool</span> <span class="method">GetDoorStatus</span>(<span class="keyword">string</span> <span class="var">door</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"corridor"</span>) <span class="keyword">return</span> <span class="var">corridorOpen</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"security"</span>) <span class="keyword">return</span> <span class="var">securityOpen</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"office"</span>) <span class="keyword">return</span> <span class="var">officeOpen</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"control"</span>) <span class="keyword">return</span> <span class="var">controlRoomOpen</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"exit"</span>) <span class="keyword">return</span> <span class="var">exitOpen</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public Color</span> <span class="method">GetDoorColor</span>(<span class="keyword">string</span> <span class="var">door</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"corridor"</span>) <span class="keyword">return</span> <span class="var">accessColor</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"security"</span>) <span class="keyword">return</span> (<span class="var">hasKeyCard</span>) ? <span class="var">accessColor</span> : <span class="var">deniedColor</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"office"</span>) <span class="keyword">return</span> <span class="var">accessColor</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"control"</span>) <span class="keyword">return</span> (<span class="var">hasKeyCard</span> && <span class="var">alarmActive</span>) ? <span class="var">accessColor</span> : <span class="var">deniedColor</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">door</span> == <span class="string">"exit"</span>) <span class="keyword">return</span> (<span class="var">hasKeyCard</span> && <span class="var">alarmActive</span> && <span class="var">exitDoorActive</span>) ? <span class="var">accessColor</span> : <span class="var">deniedColor</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="var">deniedColor</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Dua fungsi publik penyedia informasi (*Getter*) untuk digunakan oleh skrip eksternal (seperti detektor animasi pintu):</p>
+        <ul>
+            <li><code>GetDoorStatus</code> : Mengembalikan kondisi fisik pintu saat ini (apakah bernilai true/buka atau false/tutup).</li>
+            <li><code>GetDoorColor</code> : Mengembalikan data warna lampu pemandu panel pintu. Jika syarat kepemilikan item/objektif dipenuhi, ia mengirimkan warna hijau (<code class="inline-code">accessColor</code>), jika tidak terpenuhi ia mengirimkan warna merah (<code class="inline-code">deniedColor</code>).</li>
+        </ul>
+    </div>
+
+    <h2>10. Fungsi Setter Penyelesaian Objektif (State Modifiers)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public void</span> <span class="method">SetHasKeyCard</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">hasKeyCard</span> = <span class="keyword">true</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">ShowSuccessFeedback</span>(<span class="string">"ID Card Collected!"</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">UpdateChecklistUI</span>(); <span class="method">UpdateMapUI</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">StartCoroutine</span>(<span class="method">UpdateStatusAfterDelay</span>());<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public void</span> <span class="method">SetAlarmActive</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">alarmActive</span>) { <span class="method">ShowWarningPopup</span>(<span class="string">"Alarm Already Active!"</span>, <span class="keyword">true</span>); <span class="keyword">return</span>; }<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">alarmActive</span> = <span class="keyword">true</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">ShowSuccessFeedback</span>(<span class="string">"Alarm Activated!"</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">UpdateChecklistUI</span>(); <span class="method">UpdateMapUI</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">StartCoroutine</span>(<span class="method">UpdateStatusAfterDelay</span>());<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Kumpulan fungsi publik yang dipanggil oleh objek interaksi (seperti tombol/kartu kunci) saat dipicu pemain:</p>
+        <ul>
+            <li>Mengubah data status internal bersangkutan menjadi <code class="inline-code">true</code>.</li>
+            <li>Mengeluarkan umpan balik suara/teks sukses melalui <code class="inline-code">ShowSuccessFeedback</code>.</li>
+            <li>Memperbarui sistem visual UI pendaftaran misi beserta titik koordinat warna peta mini secara real-time.</li>
+            <li><code>if(alarmActive) { ... return; }</code> : Proteksi ganda (Guard Clause). Jika pemain menekan tombol alarm berkali-kali padahal sudah aktif, fungsi langsung dihentikan prematur (<code class="inline-code">return</code>) agar tidak membuang performa komputasi.</li>
+            <li><em>*Catatan: Fungsi <code class="inline-code">SetEmergencyExitActive()</code> memiliki struktur penulisan dan logika pengamanan yang identik dengan fungsi alarm di atas.</em></li>
+        </ul>
+    </div>
+
+    <h2>11. Manajemen Kemenangan & Game Over (SetEvacFinish)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public void</span> <span class="method">SetEvacFinish</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">isEvacuationComplete</span> = <span class="keyword">true</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">ShowSuccessFeedback</span>(<span class="string">"EVACUATION COMPLETE! You are safe."</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">UpdateChecklistUI</span>(); <span class="method">UpdateMapUI</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">StartCoroutine</span>(<span class="method">UpdateStatusAfterDelay</span>());<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">StartCoroutine</span>(<span class="method">SetGameOver</span>(<span class="keyword">true</span>));<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public IEnumerator</span> <span class="method">SetGameOver</span>(<span class="keyword">bool</span> <span class="var">success</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">ShowPopupRoutine</span>(<span class="string">"Play Again? (Press Enter)"</span>, <span class="keyword">false</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">success</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">ShowSuccessFeedback</span>(<span class="string">"EVACUATION COMPLETE! You are safe."</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_txtGameOver</span>.<span class="var">color</span> = <span class="keyword">new</span> <span class="type">Color</span>(0f, 1f, 0f, 1f);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">ShowWarningPopup</span>(<span class="string">"EVACUATION FAILED!"</span>, <span class="keyword">true</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_txtGameOver</span>.<span class="var">color</span> = <span class="keyword">new</span> <span class="type">Color</span>(1f, 0f, 0f, 1f);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">yield return new</span> <span class="type">WaitForSeconds</span>(5f);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">gameOver</span> = <span class="keyword">true</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Logika ketika pemain berhasil menyentuh garis finish atau kehabisan waktu evakuasi:</p>
+        <ul>
+            <li><code>SetEvacFinish()</code> : Menandai evakuasi selesai, memperbarui UI, lalu memulai Coroutine akhir hayat game.</li>
+            <li><code>SetGameOver(bool success)</code> : Mengambil keputusan visual akhir level berdasarkan parameter sukses:
+                <ul>
+                    <li>Jika <code class="inline-code">success == true</code>, tulisan utama diubah menjadi Hijau murni (Menang).</li>
+                    <li>Jika <code class="inline-code">success == false</code>, tulisan diubah menjadi Merah menyala (Gagal/Kalah).</li>
+                </ul>
+            </li>
+            <li><code>yield return new WaitForSeconds(5f);</code> : Memberikan jeda waktu dramatis selama 5 detik agar pemain bisa membaca status hasil akhir mereka di layar sebelum variabel kunci <code class="inline-code">gameOver = true</code> diaktifkan.</li>
+        </ul>
+    </div>
+
+    <h2>12. Logika Pembaruan Visual Teks Misi (UpdateChecklistUI)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public void</span> <span class="method">UpdateChecklistUI</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">_txtObjectiveIDCard</span> != <span class="keyword">null</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_txtObjectiveIDCard</span>.<span class="var">text</span> = (<span class="var">hasKeyCard</span> ? <span class="string">"&amp;#9745;"</span> : <span class="string">"&amp;#9744;"</span>) + <span class="string">" 1. Take ID Card"</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_txtObjectiveIDCard</span>.<span class="var">color</span> = <span class="var">hasKeyCard</span> ? <span class="var">colorDone</span> : <span class="var">colorActive</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_txtObjectiveIDCard</span>.<span class="var">fontStyle</span> = <span class="var">hasKeyCard</span> ? <span class="type">FontStyles</span>.<span class="var">Strikethrough</span> : <span class="type">FontStyles</span>.<span class="var">Normal</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span> <span class="type">Debug</span>.<span class="method">LogWarning</span>(<span class="string">"txtObjectiveIDCard is null!"</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// ... (pola yang sama berlaku untuk teks objektif 2, 3, dan 4)</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Mengelola perubahan string dinamis daftar objektif di panel layar utama game:</p>
+        <ul>
+            <li>Menggunakan teknik *Inline Conditional Shortcut* untuk menentukan ikon penanda kotak centang (<code class="inline-code">☑</code> jika misi beres, dan kotak kosong <code class="inline-code">☐</code> jika misi masih aktif).</li>
+            <li>Jika variabel bernilai true, warna teks seketika diubah menjadi Hijau (<code class="inline-code">colorDone</code>) dan modifikasi visual tulisan diberikan efek coretan tengah (<code class="inline-code">FontStyles.Strikethrough</code>). Jika belum selesai, warna teks tetap kuning penanda aktif.</li>
+            <li><code>Debug.LogWarning(...)</code> : Menghasilkan pesan peringatan kuning di jendela Console Unity jika developer tidak sengaja membiarkan komponen teks kosong di Inspector.</li>
+        </ul>
+    </div>
+
+    <h2>13. Sinkronisasi UI Peta Mini (UpdateMapUI)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public void</span> <span class="method">UpdateMapUI</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">_mapIDCard</span> != <span class="keyword">null</span>) <span class="var">_mapIDCard</span>.<span class="var">color</span> = <span class="var">hasKeyCard</span> ? <span class="var">colorDone</span> : <span class="var">colorActive</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">_mapAlarm</span> != <span class="keyword">null</span>) <span class="var">_mapAlarm</span>.<span class="var">color</span> = <span class="var">alarmActive</span> ? <span class="var">colorDone</span> : (<span class="var">hasKeyCard</span> ? <span class="var">colorActive</span> : <span class="var">colorTodo</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">_mapDoor</span> != <span class="keyword">null</span>) <span class="var">_mapDoor</span>.<span class="var">color</span> = <span class="var">exitDoorActive</span> ? <span class="var">colorDone</span> : (<span class="var">alarmActive</span> ? <span class="var">colorActive</span> : <span class="var">colorTodo</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">_mapExit</span> != <span class="keyword">null</span>) <span class="var">_mapExit</span>.<span class="var">color</span> = <span class="var">isEvacuationComplete</span> ? <span class="var">colorDone</span> : (<span class="var">exitDoorActive</span> ? <span class="var">colorActive</span> : <span class="var">colorTodo</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Mengatur warna ikon di peta mini untuk mengarahkan rute navigasi pemain secara tidak langsung:</p>
+        <ul>
+            <li>Ikon penanda lokasi dicat menggunakan skema tiga warna: Abu-abu (<code class="inline-code">colorTodo</code>) jika petunjuk belum boleh dikerjakan, Kuning (<code class="inline-code">colorActive</code>) jika tempat itu merupakan target mutlak saat ini, dan Hijau (<code class="inline-code">colorDone</code>) jika tugas di ruangan tersebut telah sukses dilakukan.</li>
+        </ul>
+    </div>
+
+    <h2>14. Sistem Animasi Popup & Kilatan Layar (Feedback & Lerp)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="type">IEnumerator</span> <span class="method">ShowPopupRoutine</span>(<span class="keyword">string</span> <span class="var">message</span>, <span class="keyword">bool</span> <span class="var">isError</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// ... Menyiapkan pesan teks ...</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">float</span> <span class="var">elapsed</span> = 0f;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">while</span> (<span class="var">elapsed</span> &lt; 0.3f)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_warningCanvasGroup</span>.<span class="var">alpha</span> = <span class="type">Mathf</span>.<span class="method">Lerp</span>(0f, 1f, <span class="var">elapsed</span> / 0.3f);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">elapsed</span> += <span class="type">Time</span>.<span class="var">deltaTime</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">yield return null</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_warningCanvasGroup</span>.<span class="var">alpha</span> = 1f;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">yield return new</span> <span class="type">WaitForSeconds</span>(2.5f);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// ... (Proses kebalikannya untuk animasi Fade-Out ke 0f) ...</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Membuat efek transisi kemunculan teks popup peringatan secara halus (*Fade-In* dan *Fade-Out*):</p>
+        <ul>
+            <li><code>while (elapsed &lt; 0.3f)</code> : Loop matematika yang berjalan di setiap frame selama durasi 0.3 detik.</li>
+            <li><code>Mathf.Lerp(0f, 1f, elapsed / 0.3f)</code> : Interpolasi linier untuk mengubah nilai transparansi secara bertahap dari 0 murni (tidak terlihat) menjadi 1 murni (terlihat padat sempurna).</li>
+            <li><code>elapsed += Time.deltaTime;</code> : Menambahkan akumulasi waktu nyata dari perangkat komputer untuk memastikan kecepatan animasi popup berjalan konsisten di semua FPS komputer.</li>
+            <li><code>yield return null;</code> : Memerintahkan Unity untuk menjeda baris kode di titik ini dan melanjutkannya kembali tepat di frame berikutnya.</li>
+        </ul>
+    </div>
+
+    <h2>15. Kamus Hint & Muat Ulang Game (RestartGame)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">string</span> <span class="method">GetCurrentObjectiveHint</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (!<span class="var">hasKeyCard</span>) <span class="keyword">return</span> <span class="string">"Go to Office and Take ID Card!"</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (!<span class="var">alarmActive</span>) <span class="keyword">return</span> <span class="string">"Go to Security and Activate Alarm!"</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (!<span class="var">exitDoorActive</span>) <span class="keyword">return</span> <span class="string">"Go to Control Room and Open Exit Door!"</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (!<span class="var">isEvacuationComplete</span>) <span class="keyword">return</span> <span class="string">"Go to Exit !"</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="string">"🏆 Evacuation Complete!"</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public void</span> <span class="method">RestartGame</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Time</span>.<span class="var">timeScale</span> = 1f;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">SceneManager</span>.<span class="method">LoadScene</span>(<span class="type">SceneManager</span>.<span class="method">GetActiveScene</span>().<span class="var">name</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <ul>
+            <li><code>GetCurrentObjectiveHint()</code> : Mesin pengecek logika berjenjang. Fungsi ini bertugas mendeteksi status objektif, lalu mengembalikan untaian string kalimat petunjuk yang sesuai untuk diletakkan pada teks layar utama.</li>
+            <li><code>Time.timeScale = 1f;</code> : **Sangat Penting!** Mengembalikan kecepatan waktu internal Unity yang sebelumnya dibekukan (0f) menjadi normal kembali (1f). Tanpa baris ini, level yang baru dimuat akan membeku total secara permanen.</li>
+            <li><code>SceneManager.LoadScene(...)</code> : Mendapatkan nama string dari file level yang sedang aktif saat ini, kemudian langsung memuat ulang scene dari detik pertama demi memulai siklus game baru.</li>
+        </ul>
+    </div>
+
+</body>
+</html>

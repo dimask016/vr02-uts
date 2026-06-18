@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penjelasan Per Baris UTS_FinishEvac.cs</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f6f7;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 5px solid #27ae60;
+        }
+        h1 { margin: 0; font-size: 28px; }
+        h2 { color: #2c3e50; margin-top: 40px; border-bottom: 2px solid #27ae60; padding-bottom: 8px; }
+        .intro {
+            background-color: #e8f8f5;
+            padding: 15px;
+            border-left: 5px solid #27ae60;
+            border-radius: 4px;
+            margin-bottom: 25px;
+        }
+        .code-block {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin-bottom: 10px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .explanation {
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: 6px;
+            border: 1px solid #e1e8ed;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .explanation ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .explanation li {
+            margin-bottom: 8px;
+        }
+        code.inline-code {
+            background-color: #f1f2f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #27ae60;
+            font-size: 0.95em;
+        }
+        .keyword { color: #569cd6; font-weight: bold; }
+        .type { color: #4ec9b0; }
+        .method { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .attr { color: #bdd631; }
+        .var { color: #9cdcfe; }
+        .string { color: #ce9178; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Bedah Kode Per Baris</h1>
+        <p><strong>Nama File:</strong> penjelasan_finishevac.html</p>
+        <p>Analisis Detail Skrip Zona Akhir Evakuasi (<code>UTS_FinishEvac.cs</code>)</p>
+    </header>
+
+    <div class="intro">
+        <p>Halaman ini berisi penjelasan lengkap baris demi baris dari skrip <code>UTS_FinishEvac.cs</code>. Dokumentasi ini dibuat untuk mempermudah pemahaman logika deteksi zona pemicu (Trigger Collider) yang menentukan kapan pemain dinyatakan berhasil mencapai titik aman dan memenangkan permainan.</p>
+    </div>
+
+    <h2>1. Library/Namespace Imports</h2>
+    <div class="code-block">
+        <span class="keyword">using</span> UnityEngine;
+    </div>
+    <div class="explanation">
+        <p>Mengimpor pustaka dasar engine:</p>
+        <ul>
+            <li><code>using UnityEngine;</code> : Menyediakan fungsionalitas fundamental Unity agar skrip ini dapat mengenali kelas inti seperti <code class="inline-code">MonoBehaviour</code>, komponen <code class="inline-code">Collider</code>, sistem fisik, serta metode deteksi tabrakan.</li>
+        </ul>
+    </div>
+
+    <h2>2. Deklarasi Kelas & Variabel Komponen (Serialized Fields)</h2>
+    <div class="code-block">
+        <span class="keyword">public class</span> <span class="type">UTS_FinishEvac</span> : <span class="type">MonoBehaviour</span><br>
+        {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">UTS_GameController</span> <span class="var">_gameController</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">BoxCollider</span> <span class="var">_finishCollider</span>;
+    </div>
+    <div class="explanation">
+        <ul>
+            <li><code>public class UTS_FinishEvac : MonoBehaviour</code> : Mendeklarasikan blueprint kelas bernama <code>UTS_FinishEvac</code> yang mewarisi sifat dasar Unity (<code class="inline-code">MonoBehaviour</code>) agar dapat dipasang ke GameObject di dalam hierarki scene.</li>
+            <li>Atribut <code>[SerializeField]</code> memaksa variabel privat agar terekspos di jendela Inspector Unity, mempermudah proses menghubungkan referensi objek:
+                <ul>
+                    <li><code>_gameController</code> : Menyimpan referensi ke komponen skrip pengontrol utama (<code>UTS_GameController</code>) untuk mengirimkan sinyal kemenangan.</li>
+                    <li><code>_finishCollider</code> : Menyimpan referensi komponen tabrakan berbentuk kotak (<code class="inline-code">BoxCollider</code>) yang bertindak sebagai sensor batas garis finish di area permainan.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <h2>3. Fungsi Start & Update Default</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Start is called once before the first execution of Update after the MonoBehaviour is created</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">Start</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Update is called once per frame</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">Update</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <ul>
+            <li><code>Start()</code> dan <code>Update()</code> : Merupakan fungsi siklus hidup (lifecycle) bawaan yang digenerasikan otomatis oleh Unity. Pada skrip ini, kedua fungsi dibiarkan kosong karena area finish tidak memerlukan inisialisasi awal atau pengecekan logika berkala di setiap framenya. Pengecekan hanya dilakukan jika terjadi peristiwa/event tertentu saja.</li>
+        </ul>
+    </div>
+
+    <h2>4. Logika Deteksi Sensor Finish (OnTriggerEnter)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public void</span> <span class="method">OnTriggerEnter</span>(<span class="type">Collider</span> <span class="var">other</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">other</span>.<span class="method">CompareTag</span>(<span class="string">"Player"</span>)) <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_gameController</span>.<span class="method">SetEvacFinish</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        }
+    </div>
+    <div class="explanation">
+        <p>Fungsi pemicu (*callback event*) dari sistem fisika Unity yang otomatis berjalan ketika ada objek lain menembus area BoxCollider sensor (dengan catatan opsi *Is Trigger* pada collider tersebut telah diaktifkan):</p>
+        <ul>
+            <li><code>Collider other</code> : Parameter yang menampung informasi data collider milik objek asing yang baru saja masuk atau menembus ke dalam area sensor finish.</li>
+            <li><code>if (other.CompareTag("Player"))</code> : Melakukan validasi penyaringan menggunakan sistem Tag. Struktur ini memastikan bahwa fungsi di dalamnya hanya akan berjalan jika objek yang menembus garis finish tersebut adalah karakter pemain (<code class="inline-code">Player</code>), bukan objek lain seperti musuh, barang jatuh, atau peluru.</li>
+            <li><code>_gameController.SetEvacFinish();</code> : Ketika dipastikan bahwa objek tersebut adalah Player, skrip ini langsung memanggil fungsi <code>SetEvacFinish()</code> yang berada di dalam master controller untuk menghentikan timer, memicu UI kemenangan, dan mengubah state game menjadi selesai.</li>
+        </ul>
+    </div>
+
+</body>
+</html>

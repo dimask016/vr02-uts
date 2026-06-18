@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penjelasan Per Baris UTS_AlarmButton.cs</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f6f7;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 5px solid #e67e22;
+        }
+        h1 { margin: 0; font-size: 28px; }
+        h2 { color: #2c3e50; margin-top: 40px; border-bottom: 2px solid #e67e22; padding-bottom: 8px; }
+        .intro {
+            background-color: #fdf2e9;
+            padding: 15px;
+            border-left: 5px solid #e67e22;
+            border-radius: 4px;
+            margin-bottom: 25px;
+        }
+        .code-block {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin-bottom: 10px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .explanation {
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: 6px;
+            border: 1px solid #e1e8ed;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .explanation ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .explanation li {
+            margin-bottom: 8px;
+        }
+        code.inline-code {
+            background-color: #f1f2f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #d35400;
+            font-size: 0.95em;
+        }
+        .keyword { color: #569cd6; font-weight: bold; }
+        .type { color: #4ec9b0; }
+        .method { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .attr { color: #bdd631; }
+        .var { color: #9cdcfe; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Bedah Kode Per Baris</h1>
+        <p><strong>Nama File:</strong> penjelasan_AlarmButton.html</p>
+        <p>Analisis Detail Skrip Sakelar Alarm Evakuasi (<code>UTS_AlarmButton.cs</code>)</p>
+    </header>
+
+    <div class="intro">
+        <p>Halaman ini berisi penjelasan lengkap baris demi baris dari skrip <code>UTS_AlarmButton.cs</code>. Dokumentasi ini dibuat untuk mempermudah pemahaman logika interaksi tombol alarm UI yang harus diaktifkan pemain sebagai syarat perkembangan misi evakuasi selanjutnya.</p>
+    </div>
+
+    <h2>1. Library/Namespace Imports</h2>
+    <div class="code-block">
+        <span class="keyword">using</span> UnityEngine;<br>
+        <span class="keyword">using</span> UnityEngine.UI;
+    </div>
+    <div class="explanation">
+        <p>Mengimpor pustaka (library) bawaan Unity yang diperlukan oleh skrip ini:</p>
+        <ul>
+            <li><code>using UnityEngine;</code> : Library dasar utama Unity agar skrip mengenali kelas <code class="inline-code">MonoBehaviour</code>, komponen <code class="inline-code">SerializeField</code>, dan struktur data internal engine lainnya.</li>
+            <li><code>using UnityEngine.UI;</code> : Mengijinkan skrip untuk mengakses, memantau, dan mengontrol komponen UI sistem klasik Unity, khususnya objek bertipe <code class="inline-code">Button</code>.</li>
+        </ul>
+    </div>
+
+    <h2>2. Deklarasi Kelas & Variabel Referensi Komponen</h2>
+    <div class="code-block">
+        <span class="keyword">public class</span> <span class="type">UTS_AlarmButton</span> : <span class="type">MonoBehaviour</span><br>
+        {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">Button</span> <span class="var">_alarmButton</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">UTS_GameController</span> <span class="var">_gameController</span>;
+    </div>
+    <div class="explanation">
+        <ul>
+            <li><code>public class UTS_AlarmButton : MonoBehaviour</code> : Mendeklarasikan kelas utama bernama <code>UTS_AlarmButton</code> yang mewarisi sifat dari <code class="inline-code">MonoBehaviour</code> agar dapat disematkan ke dalam komponen objek di hierarki Unity.</li>
+            <li>Atribut <code>[SerializeField]</code> digunakan untuk mengekspos variabel privat ke jendela Inspector agar bisa dihubungkan secara visual:
+                <ul>
+                    <li><code>_alarmButton</code> : Menyimpan referensi komponen tombol UI (Button) fisik di layar yang akan ditekan pemain untuk menyalakan sirine.</li>
+                    <li><code>_gameController</code> : Menyimpan referensi ke skrip pusat pengatur alur permainan (<code>UTS_GameController</code>) untuk mengirimkan pemberitahuan perubahan state.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <h2>3. Registrasi Event Klik Tombol (Fungsi Start)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Start is called once before the first execution of Update after the MonoBehaviour is created</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">Start</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_alarmButton</span>.<span class="var">onClick</span>.<span class="method">AddListener</span>(<span class="method">OnAlarmButtonClick</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Fungsi siklus hidup Unity yang dieksekusi satu kali tepat sebelum frame pertama diperbarui:</p>
+        <ul>
+            <li><code>_alarmButton.onClick.AddListener(OnAlarmButtonClick);</code> : Berfungsi untuk mendaftarkan (*subscribe*) fungsi lokal bernama <code>OnAlarmButtonClick</code> ke dalam event klik tombol <code class="inline-code">onClick</code>.</li>
+            <li>Melalui baris ini, ketika pemain berinteraksi dan mengklik tombol alarm tersebut di antarmuka game, Unity akan langsung memicu jalannya fungsi <code>OnAlarmButtonClick</code> secara otomatis.</li>
+        </ul>
+    </div>
+
+    <h2>4. Fungsi Update Default</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Update is called once per frame</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">Update</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <ul>
+            <li><code>Update()</code> : Fungsi bawaan Unity yang dijalankan berulang kali di setiap frame. Pada skrip ini fungsi dibiarkan kosong tanpa kode karena sistem aktivasi alarm murni menggunakan arsitektur berbasis event (*Event-Driven*), sehingga menghemat beban pemrosesan CPU karena tidak perlu mengecek data apapun di setiap frame.</li>
+        </ul>
+    </div>
+
+    <h2>5. Eksekusi Logika Pusat Kebijakan (OnAlarmButtonClick)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public void</span> <span class="method">OnAlarmButtonClick</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_gameController</span>.<span class="method">SetAlarmActive</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        }
+    </div>
+    <div class="explanation">
+        <p>Fungsi publik utama yang dipanggil sesaat setelah event klik terdeteksi:</p>
+        <ul>
+            <li><code>_gameController.SetAlarmActive();</code> : Berfungsi untuk menginstruksikan skrip master pengontrol game agar menjalankan fungsi <code>SetAlarmActive()</code>.</li>
+            <li>Di dalam master controller, pemanggilan fungsi ini akan mengubah status game menjadi *Alarm Active*, memicu kilatan visual hijau sukses di layar, memperbarui teks misi ke-2 (Activate Alarm) menjadi coret centang hijau, serta mengubah indikator warna lokasi target alarm pada mini-map.</li>
+        </ul>
+    </div>
+
+</body>
+</html>

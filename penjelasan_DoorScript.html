@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penjelasan Per Baris DoorScript.cs</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f6f7;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 5px solid #16a085;
+        }
+        h1 { margin: 0; font-size: 28px; }
+        h2 { color: #2c3e50; margin-top: 40px; border-bottom: 2px solid #16a085; padding-bottom: 8px; }
+        .intro {
+            background-color: #e8f8f5;
+            padding: 15px;
+            border-left: 5px solid #16a085;
+            border-radius: 4px;
+            margin-bottom: 25px;
+        }
+        .code-block {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin-bottom: 10px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .explanation {
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: 6px;
+            border: 1px solid #e1e8ed;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .explanation ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .explanation li {
+            margin-bottom: 8px;
+        }
+        code.inline-code {
+            background-color: #f1f2f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #16a085;
+            font-size: 0.95em;
+        }
+        .keyword { color: #569cd6; font-weight: bold; }
+        .type { color: #4ec9b0; }
+        .method { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .attr { color: #bdd631; }
+        .var { color: #9cdcfe; }
+        .string { color: #ce9178; }
+        .number { color: #b5cea8; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Bedah Kode Per Baris</h1>
+        <p><strong>Nama File:</strong> penjelasan_DoorScript.html</p>
+        <p>Analisis Detail Skrip Mekanis Pintu Angkat Vertikal (<code>DoorScript.cs</code>)</p>
+    </header>
+
+    <div class="intro">
+        <p>Halaman ini berisi penjelasan lengkap baris demi baris dari skrip <code>DoorScript.cs</code>. Dokumentasi ini dibuat untuk mempermudah pemahaman logika dasar perpindahan translasi posisi pintu satu arah (vertikal ke atas) secara absolut dan dinamis di Unity.</p>
+    </div>
+
+    <h2>1. Library/Namespace Imports</h2>
+    <div class="code-block">
+        <span class="keyword">using</span> UnityEngine;
+    </div>
+    <div class="explanation">
+        <p>Mengimpor pustaka (library) utama engine:</p>
+        <ul>
+            <li><code>using UnityEngine;</code> : Mengakses fungsionalitas dasar Unity seperti komponen <code class="inline-code">Transform</code>, struktur data matematika <code class="inline-code">Vector3</code>, pencatatan log debug, serta perhitungan frame waktu.</li>
+        </ul>
+    </div>
+
+    <h2>2. Deklarasi Properti Konfigurasi Pintu</h2>
+    <div class="code-block">
+        <span class="keyword">public class</span> <span class="type">DoorScript</span> : <span class="type">MonoBehaviour</span><br>
+        {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">Header</span>(<span class="string">"Pengaturan Pintu"</span>)]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public Transform</span> <span class="var">doorMesh</span>;       <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public float</span> <span class="var">openHeight</span> = <span class="number">5f</span>;      <span class="comment">// Tinggi pintu saat terbuka (meter)</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public float</span> <span class="var">openSpeed</span> = <span class="number">3f</span>;     
+    </div>
+    <div class="explanation">
+        <p>Mendefinisikan parameter mekanis pintu yang dapat diubah nilainya melalui Inspector Unity:</p>
+        <ul>
+            <li><code>doorMesh</code> : Slot referensi objek 3D model pintu yang akan digeser naik-turun.</li>
+            <li><code>openHeight</code> : Menentukan jarak pergeseran vertikal maksimal pintu saat membuka (dalam contoh ini diatur 5 meter ke atas).</li>
+            <li><code>openSpeed</code> : Parameter pengatur kecepatan gerak geser pintu.</li>
+        </ul>
+    </div>
+
+    <h2>3. Variabel Posisi Internal & Status</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> <span class="type">Vector3</span> <span class="var">closedPosition</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> <span class="type">Vector3</span> <span class="var">openPosition</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> <span class="keyword">bool</span> <span class="var">isOpen</span> = <span class="keyword">false</span>;
+    </div>
+    <div class="explanation">
+        <p>Variabel privat yang digunakan secara internal untuk memproses posisi koordinat:</p>
+        <ul>
+            <li><code>closedPosition</code> : Menyimpan titik koordinat 3D awal pintu ketika dalam keadaan tertutup rapat.</li>
+            <li><code>openPosition</code> : Menyimpan titik koordinat tujuan akhir ketika pintu terangkat ke atas.</li>
+            <li><code>isOpen</code> : Variabel penanda status (*state boolean*) untuk melacak apakah pintu sedang aktif membuka (<code class="inline-code">true</code>) atau menutup (<code class="inline-code">false</code>).</li>
+        </ul>
+    </div>
+
+    <h2>4. Penguncian Koordinat Absolut (Fungsi Start)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">Start</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">doorMesh</span> != <span class="keyword">null</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Kunci posisi awal dan posisi akhir sejak awal game secara mutlak</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">closedPosition</span> = <span class="var">doorMesh</span>.<span class="var">position</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">openPosition</span> = <span class="var">closedPosition</span> + <span class="keyword">new</span> <span class="type">Vector3</span>(<span class="number">0</span>, <span class="var">openHeight</span>, <span class="number">0</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Debug</span>.<span class="method">LogError</span>(<span class="string">"PENTING: Tarik objek Pintu ke kolom Door Mesh!"</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Melakukan inisialisasi koordinat target saat game pertama kali dijalankan:</p>
+        <ul>
+            <li><code>if (doorMesh != null)</code> : Memastikan validasi bahwa objek pintu sudah dipasang di Inspector agar tidak terjadi error *NullReferenceException*.</li>
+            <li><code>closedPosition = doorMesh.position;</code> : Mengunci koordinat posisi letak awal pintu di dalam map sebagai acuan menutup.</li>
+            <li><code>openPosition = closedPosition + new Vector3(0, openHeight, 0);</code> : Menghitung posisi target buka dengan cara menambahkan nilai sumbu Y posisi awal dengan jarak <code class="inline-code">openHeight</code>. Pintu akan bergeser lurus ke atas.</li>
+            <li><code>Debug.LogError(...)</code> : Menampilkan pesan error berwarna merah di konsol Unity jika developer lupa memasukkan objek pintu.</li>
+        </ul>
+    </div>
+
+    <h2>5. Interpolasi Pergerakan Real-Time (Fungsi Update)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">Update</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">doorMesh</span> == <span class="keyword">null</span>) <span class="keyword">return</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Tentukan ke mana arah tujuan posisi secara real-time</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Vector3</span> <span class="var">target</span> = <span class="var">isOpen</span> ? <span class="var">openPosition</span> : <span class="var">closedPosition</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Paksa objek bergerak ke target secara absolut</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">doorMesh</span>.<span class="var">position</span> = <span class="type">Vector3</span>.<span class="method">MoveTowards</span>(<span class="var">doorMesh</span>.<span class="var">position</span>, <span class="var">target</span>, <span class="var">openSpeed</span> * <span class="type">Time</span>.<span class="var">deltaTime</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Menggerakkan objek pintu secara halus di setiap frame berjalan:</p>
+        <ul>
+            <li><code>Vector3 target = isOpen ? openPosition : closedPosition;</code> : Menggunakan operasi *Ternary* untuk menentukan titik koordinat tujuan. Jika <code class="inline-code">isOpen</code> bernilai true, targetnya adalah posisi di atas (<code class="inline-code">openPosition</code>), jika false targetnya adalah posisi semula (<code class="inline-code">closedPosition</code>).</li>
+            <li><code>Vector3.MoveTowards(...)</code> : Memindahkan posisi pintu dari koordinat saat ini menuju koordinat target secara linear dengan kecepatan konstan.</li>
+            <li><code>openSpeed * Time.deltaTime</code> : Menjaga agar pergerakan transisi pintu tetap mulus, stabil, dan kecepatannya konsisten di berbagai perangkat tanpa terpengaruh oleh naik-turunnya performa FPS (Frame Per Second) game.</li>
+        </ul>
+    </div>
+
+    <h2>6. Sakelar Pembalik Status (Fungsi ToggleDoor)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// Fungsi yang dipanggil oleh Button</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public void</span> <span class="method">ToggleDoor</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">isOpen</span> = !<span class="var">isOpen</span>; <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Debug</span>.<span class="method">Log</span>(<span class="string">"Tombol diklik! Status pintu saat ini: "</span> + (<span class="var">isOpen</span> ? <span class="string">"TERBUKA"</span> : <span class="string">"TERTUTUP"</span>));<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        }
+    </div>
+    <div class="explanation">
+        <p>Fungsi pemicu interaksi utama:</p>
+        <ul>
+            <li><code>public void ToggleDoor()</code> : Fungsi ini dideklarasikan secara publik agar dapat dihubungkan dan dipanggil oleh komponen tombol UI (Button onClick) atau dipicu lewat tembakan laser raycast karakter.</li>
+            <li><code>isOpen = !isOpen;</code> : Membalikkan kondisi boolean saat ini (*toggle*). Jika pintu sedang menutup, maka perintah ini akan mengubah statusnya menjadi membuka, dan begitu pula sebaliknya.</li>
+            <li><code>Debug.Log(...)</code> : Mengirimkan pesan konfirmasi status operasional pintu terbaru ke jendela Console Unity untuk mempermudah proses pengujian (*debugging*) oleh developer.</li>
+        </ul>
+    </div>
+
+</body>
+</html>

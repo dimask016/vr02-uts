@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penjelasan Per Baris UTS_DoorController.cs</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f6f7;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 5px solid #9b59b6;
+        }
+        h1 { margin: 0; font-size: 28px; }
+        h2 { color: #2c3e50; margin-top: 40px; border-bottom: 2px solid #9b59b6; padding-bottom: 8px; }
+        .intro {
+            background-color: #f5eef8;
+            padding: 15px;
+            border-left: 5px solid #9b59b6;
+            border-radius: 4px;
+            margin-bottom: 25px;
+        }
+        .code-block {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin-bottom: 10px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .explanation {
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: 6px;
+            border: 1px solid #e1e8ed;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .explanation ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .explanation li {
+            margin-bottom: 8px;
+        }
+        code.inline-code {
+            background-color: #f1f2f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #8e44ad;
+            font-size: 0.95em;
+        }
+        .keyword { color: #569cd6; font-weight: bold; }
+        .type { color: #4ec9b0; }
+        .method { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .attr { color: #bdd631; }
+        .var { color: #9cdcfe; }
+        .string { color: #ce9178; }
+        .number { color: #b5cea8; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Bedah Kode Per Baris</h1>
+        <p><strong>Nama File:</strong> penjelasan_DoorController.html</p>
+        <p>Analisis Detail Skrip Pengendali Pergerakan Pintu Ganda (<code>UTS_DoorController.cs</code>)</p>
+    </header>
+
+    <div class="intro">
+        <p>Halaman ini berisi penjelasan lengkap baris demi baris dari skrip <code>UTS_DoorController.cs</code>. Dokumentasi ini dibuat untuk mempermudah pemahaman logika kalkulasi posisi dinamis pintu kiri dan kanan, sistem interaksi tombol, serta interpolasi pergerakan sliding ganda di Unity.</p>
+    </div>
+
+    <h2>1. Library/Namespace Imports</h2>
+    <div class="code-block">
+        <span class="keyword">using</span> UnityEngine;<br>
+        <span class="keyword">using</span> UnityEngine.UI;
+    </div>
+    <div class="explanation">
+        <p>Mengimpor pustaka (library) eksternal yang dibutuhkan oleh skrip:</p>
+        <ul>
+            <li><code>using UnityEngine;</code> : Mengakses core engine Unity untuk mengenali komponen mekanis seperti <code class="inline-code">Transform</code>, <code class="inline-code">Vector3</code>, dan fungsi pergerakan fisik.</li>
+            <li><code>using UnityEngine.UI;</code> : Digunakan agar skrip mengenali komponen <code class="inline-code">Button</code> dan <code class="inline-code">Image</code> untuk antarmuka interaksi tombol pintu.</li>
+        </ul>
+    </div>
+
+    <h2>2. Deklarasi Variabel & Komponen Pintu</h2>
+    <div class="code-block">
+        <span class="keyword">public class</span> <span class="type">UTS_DoorController</span> : <span class="type">MonoBehaviour</span><br>
+        {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">Header</span> (<span class="string">"Door Button"</span>)]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">Button</span> <span class="var">_doorButton</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> <span class="type">Image</span> <span class="var">buttonImage</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">Header</span> ("<span class="string">Left Door</span>")]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">Transform</span> <span class="var">_leftDoor</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> <span class="type">Vector3</span> <span class="var">leftDoorDefaultPosition</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> <span class="type">Vector3</span> <span class="var">leftDoorTargetPosition</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">Header</span> ("<span class="string">Right Door</span>")]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">Transform</span> <span class="var">_rightDoor</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> <span class="type">Vector3</span> <span class="var">rightDoorDefaultPosition</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span> <span class="type">Vector3</span> <span class="var">rightDoorTargetPosition</span>;
+    </div>
+    <div class="explanation">
+        <p>Mendeklarasikan properti fisik dan referensi objek pintu:</p>
+        <ul>
+            <li><code>_doorButton</code> & <code>buttonImage</code> : Tombol UI yang menempel di panel dinding serta penampung komponen visual gambarnya untuk diubah warnanya secara dinamis.</li>
+            <li><code>_leftDoor</code> & <code>_rightDoor</code> : Mengambil data koordinat 3D (Transform) dari sayap pintu kiri dan sayap pintu kanan.</li>
+            <li><code>...DefaultPosition</code> : Menyimpan koordinat awal (posisi menutup rapat) saat game pertama kali dijalankan.</li>
+            <li><code>...TargetPosition</code> : Menyimpan koordinat tujuan akhir (posisi terbuka lebar) hasil kalkulasi otomatis.</li>
+        </ul>
+    </div>
+
+    <h2>3. Identifikasi GameController & ID Pintu</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">Header</span> (<span class="string">"GameController"</span>)]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">SerializeField</span>] <span class="type">UTS_GameController</span> <span class="var">_gameController</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public string</span> <span class="var">Door</span>;
+    </div>
+    <div class="explanation">
+        <ul>
+            <li><code>_gameController</code> : Menghubungkan skrip ini ke pusat logika permainan agar dapat saling bertukar informasi status.</li>
+            <li><code>public string Door;</code> : Pengenal unik berbentuk teks string (contoh diisi: <code class="inline-code">"security"</code>, <code class="inline-code">"office"</code>, atau <code class="inline-code">"control"</code>) di Inspector untuk menentukan identitas pintu ini.</li>
+        </ul>
+    </div>
+
+    <h2>4. Kalkulasi Otomatis Arah Sliding Pintu (Fungsi Start)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">Start</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">buttonImage</span> = <span class="method">GetComponent</span>&lt;<span class="type">Image</span>&gt;();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_doorButton</span>.<span class="var">onClick</span>.<span class="method">AddListener</span>(<span class="method">OnDoorButtonClick</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">leftDoorDefaultPosition</span> = <span class="var">_leftDoor</span>.<span class="var">position</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">rightDoorDefaultPosition</span> = <span class="var">_rightDoor</span>.<span class="var">position</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">_leftDoor</span>.<span class="var">localScale</span>.<span class="var">x</span> &gt; <span class="var">_leftDoor</span>.<span class="var">localScale</span>.<span class="var">z</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">leftDoorTargetPosition</span> = <span class="keyword">new</span> <span class="type">Vector3</span>(<span class="var">_leftDoor</span>.<span class="var">position</span>.<span class="var">x</span> - <span class="number">5f</span>, <span class="var">_leftDoor</span>.<span class="var">position</span>.<span class="var">y</span>, <span class="var">_leftDoor</span>.<span class="var">position</span>.<span class="var">z</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">leftDoorTargetPosition</span> = <span class="keyword">new</span> <span class="type">Vector3</span>(<span class="var">_leftDoor</span>.<span class="var">position</span>.<span class="var">x</span>, <span class="var">_leftDoor</span>.<span class="var">position</span>.<span class="var">y</span>, <span class="var">_leftDoor</span>.<span class="var">position</span>.<span class="var">z</span> + <span class="number">5f</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">// ... (Kalkulasi yang sama berlaku untuk _rightDoor dengan arah berlawanan)</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Inisialisasi cerdas saat game dimulai agar satu skrip bisa dipakai untuk pintu yang menghadap ke mana saja:</p>
+        <ul>
+            <li>Mendapatkan komponen gambar tombol dan mendaftarkan fungsi klik tombol (<code class="inline-code">AddListener</code>).</li>
+            <li>Mengunci posisi awal pintu ke dalam variabel <code class="inline-code">DefaultPosition</code>.</li>
+            <li><code>if(_leftDoor.localScale.x > _leftDoor.localScale.z)</code> : Sistem mendeteksi orientasi rotasi pintu di map. Jika skala X lebih besar dari Z, pintu dianggap menghadap horizontal, sehingga saat terbuka pintu kiri akan digeser mundur sejauh 5 unit pada sumbu X (<code class="inline-code">x - 5f</code>). Jika sebaliknya, pintu digeser 5 unit pada sumbu Z (<code class="inline-code">z + 5f</code>).</li>
+        </ul>
+    </div>
+
+    <h2>5. Loop Deteksi Transisi Pintu (Fungsi Update)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">Update</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">ChangeButtonColor</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span>(<span class="var">_gameController</span>.<span class="method">GetDoorStatus</span>(<span class="var">Door</span>))<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">AnimateDoorOpen</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">else</span><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">AnimateDoorClose</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Mengeksekusi logika visual di setiap frame:</p>
+        <ul>
+            <li><code>ChangeButtonColor();</code> : Terus memperbarui warna lampu tombol indikator sesuai hak akses terbaru pemain.</li>
+            <li><code>_gameController.GetDoorStatus(Door)</code> : Meminta informasi status ke pusat data game controller berdasarkan ID string pintu saat ini. Jika bernilai <code class="inline-code">true</code> (terbuka), maka fungsi pergerakan membuka diaktifkan; jika <code class="inline-code">false</code> (tertutup), fungsi pergerakan menutup dijalankan.</li>
+        </ul>
+    </div>
+
+    <h2>6. Trigger Interaksi Klik Tombol (OnDoorButtonClick)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public void</span> <span class="method">OnDoorButtonClick</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_gameController</span>.<span class="method">ToggleIsOpen</span>(<span class="var">Door</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <ul>
+            <li>Fungsi ini dipicu sesaat setelah pemain menekan tombol fisik UI di layar. Kode langsung meneruskan perintah dengan memanggil fungsi <code>ToggleIsOpen(Door)</code> milik Game Controller untuk memvalidasi apakah pemain berhak membuka pintu tersebut atau memunculkan popup error jika syarat belum terpenuhi.</li>
+        </ul>
+    </div>
+
+    <h2>7. Interpolasi Animasi Translasi (AnimateDoorOpen & Close)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public void</span> <span class="method">AnimateDoorOpen</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_leftDoor</span>.<span class="var">position</span> = <span class="type">Vector3</span>.<span class="method">MoveTowards</span>(<span class="var">_leftDoor</span>.<span class="var">position</span>, <span class="var">leftDoorTargetPosition</span>, <span class="number">5f</span> * <span class="type">Time</span>.<span class="var">deltaTime</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_rightDoor</span>.<span class="var">position</span> = <span class="type">Vector3</span>.<span class="method">MoveTowards</span>(<span class="var">_rightDoor</span>.<span class="var">position</span>, <span class="var">rightDoorTargetPosition</span>, <span class="number">5f</span> * <span class="type">Time</span>.<span class="var">deltaTime</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public void</span> <span class="method">AnimateDoorClose</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_leftDoor</span>.<span class="var">position</span> = <span class="type">Vector3</span>.<span class="method">MoveTowards</span>(<span class="var">_leftDoor</span>.<span class="var">position</span>, <span class="var">leftDoorDefaultPosition</span>, <span class="number">5f</span> * <span class="type">Time</span>.<span class="var">deltaTime</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">_rightDoor</span>.<span class="var">position</span> = <span class="type">Vector3</span>.<span class="method">MoveTowards</span>(<span class="var">_rightDoor</span>.<span class="var">position</span>, <span class="var">rightDoorDefaultPosition</span>, <span class="number">5f</span> * <span class="type">Time</span>.<span class="var">deltaTime</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Logika matematika pergerakan pergeseran objek pintu secara halus tanpa animasi bawaan Unity (Timeline/Animator):</p>
+        <ul>
+            <li><code>Vector3.MoveTowards(...)</code> : Fungsi kalkulasi linier yang menggeser posisi objek dari titik A ke titik B dengan kecepatan konstan yang presisi.</li>
+            <li><code>5f * Time.deltaTime</code> : Menentukan kecepatan sliding pintu (skala 5) yang dikalikan dengan waktu frame berjalan agar pergerakan pintu terlihat halus, mulus, dan seragam di semua komputer (tidak bergantung pada tinggi/rendahnya FPS perangkat).</li>
+        </ul>
+    </div>
+
+    <h2>8. Sinkronisasi Warna Indikator Tombol (ChangeButtonColor)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public void</span> <span class="method">ChangeButtonColor</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">buttonImage</span>.<span class="var">color</span> = <span class="var">_gameController</span>.<span class="method">GetDoorColor</span>(<span class="var">Door</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        }
+    </div>
+    <div class="explanation">
+        <ul>
+            <li><code>buttonImage.color = _gameController.GetDoorColor(Door);</code> : Mengubah warna visual komponen tombol panel interaksi di dinding secara langsung. Skrip mengambil data warna dari fungsi <code class="inline-code">GetDoorColor</code> di GameController. Lampu tombol akan berubah menjadi hijau jika akses terbuka/diijinkan, dan merah jika akses ditolak/dikunci.</li>
+        </ul>
+    </div>
+
+</body>
+</html>

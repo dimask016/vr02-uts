@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penjelasan Per Baris PlayerController.cs</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f6f7;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 5px solid #3498db;
+        }
+        h1 { margin: 0; font-size: 28px; }
+        h2 { color: #2c3e50; margin-top: 40px; border-bottom: 2px solid #3498db; padding-bottom: 8px; }
+        .intro {
+            background-color: #ebf5fb;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+            border-radius: 4px;
+            margin-bottom: 25px;
+        }
+        .code-block {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin-bottom: 10px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .explanation {
+            background-color: white;
+            padding: 15px 20px;
+            border-radius: 6px;
+            border: 1px solid #e1e8ed;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+        .explanation ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .explanation li {
+            margin-bottom: 8px;
+        }
+        code.inline-code {
+            background-color: #f1f2f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #2980b9;
+            font-size: 0.95em;
+        }
+        .keyword { color: #569cd6; font-weight: bold; }
+        .type { color: #4ec9b0; }
+        .method { color: #dcdcaa; }
+        .comment { color: #6a9955; font-style: italic; }
+        .attr { color: #bdd631; }
+        .var { color: #9cdcfe; }
+        .string { color: #ce9178; }
+        .number { color: #b5cea8; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Bedah Kode Per Baris</h1>
+        <p><strong>Nama File:</strong> penjelasan_PlayerController.html</p>
+        <p>Analisis Detail Skrip Penggerak & Interaksi Pemain (<code>PlayerController.cs</code>)</p>
+    </header>
+
+    <div class="intro">
+        <p>Halaman ini berisi penjelasan lengkap baris demi baris dari skrip <code>PlayerController.cs</code>. Dokumentasi ini dibuat untuk mempermudah pemahaman sistem kendali sudut pandang orang pertama (First-Person), sistem fisika pergerakan karakter, serta metode deteksi jarak interaksi tombol UI dan objek 3D menggunakan teknik Raycasting.</p>
+    </div>
+
+    <h2>1. Namespace & Atribut Komponen Wajib</h2>
+    <div class="code-block">
+        <span class="keyword">using</span> System.Collections.Generic;<br>
+        <span class="keyword">using</span> UnityEngine;<br>
+        <span class="keyword">using</span> UnityEngine.UI;<br>
+        <span class="keyword">using</span> UnityEngine.EventSystems;<br><br>
+        [<span class="type">RequireComponent</span>(<span class="keyword">typeof</span>(<span class="type">CharacterController</span>))]<br>
+        <span class="keyword">public class</span> <span class="type">PlayerController</span> : <span class="type">MonoBehaviour</span>
+    </div>
+    <div class="explanation">
+        <p>Memasukkan pustaka sistem dan pengaturan prasyarat komponen objek:</p>
+        <ul>
+            <li><code>using UnityEngine.EventSystems;</code> : Diperlukan agar karakter dapat mendeteksi dan mengirimkan event klik ke elemen UI Canvas di dalam dunia 3D.</li>
+            <li><code>[RequireComponent(typeof(CharacterController))]</code> : Atribut pelindung yang memastikan GameObject tempat skrip ini menempel **wajib** memiliki komponen <code class="inline-code">CharacterController</code>. Jika belum ada, Unity secara otomatis akan menambahkannya untuk mencegah terjadinya error akibat komponen yang hilang.</li>
+        </ul>
+    </div>
+
+    <h2>2. Variabel Konfigurasi Sistem</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">Header</span>(<span class="string">"Pergerakan WASD"</span>)]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public float</span> <span class="var">moveSpeed</span> = <span class="number">5f</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">Header</span>(<span class="string">"Kamera & Mouse Look"</span>)]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public Camera</span> <span class="var">playerCamera</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public float</span> <span class="var">mouseSensitivity</span> = <span class="number">2f</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public float</span> <span class="var">upperLookLimit</span> = -<span class="number">80f</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public float</span> <span class="var">lowerLookLimit</span> = <span class="number">80f</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">Header</span>(<span class="string">"Sistem Interaksi"</span>)]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public float</span> <span class="var">interactDistance</span> = <span class="number">3f</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;[<span class="attr">Header</span>(<span class="string">"Crosshair UI Optional"</span>)]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public Image</span> <span class="var">crosshairImage</span>;
+    </div>
+    <div class="explanation">
+        <p>Pengaturan parameter kontrol di dalam jendela Inspector Unity:</p>
+        <ul>
+            <li><code>moveSpeed</code> : Menentukan kecepatan translasi berjalan pemain berjalan.</li>
+            <li><code>mouseSensitivity</code> : Skala sensitivitas pergerakan mouse saat memutar arah pandang kamera.</li>
+            <li><code>upperLookLimit</code> & <code>lowerLookLimit</code> : Batas sudut rotasi vertikal (mendongak ke atas dan menunduk ke bawah) agar kamera tidak berputar terbalik melewati batas kepala.</li>
+            <li><code>interactDistance</code> : Jarak jangkauan maksimal (misal: 3 meter) bagi pemain untuk dapat menekan tombol panel pintu atau mengambil benda.</li>
+        </ul>
+    </div>
+
+    <h2>3. Inisialisasi Kunci Kursor (Fungsi Start)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">Start</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">characterController</span> = <span class="method">GetComponent</span>&lt;<span class="type">CharacterController</span>&gt;();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">playerCamera</span> == <span class="keyword">null</span>) <span class="var">playerCamera</span> = <span class="type">Camera</span>.<span class="var">main</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Cursor</span>.<span class="var">lockState</span> = <span class="type">CursorLockMode</span>.<span class="var">Locked</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Cursor</span>.<span class="var">visible</span> = <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">crosshairImage</span> != <span class="keyword">null</span>) <span class="var">crosshairImage</span>.<span class="var">raycastTarget</span> = <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Inisialisasi status sistem di awal permainan:</p>
+        <ul>
+            <li><code>Cursor.lockState = CursorLockMode.Locked;</code> : Mengunci pointer mouse agar tetap berada di titik tengah layar game.</li>
+            <li><code>Cursor.visible = false;</code> : Menyembunyikan panah kursor mouse agar tidak mengganggu pandangan pemain selama bermain game FPS.</li>
+            <li><code>crosshairImage.raycastTarget = false;</code> : Mematikan deteksi raycast pada gambar crosshair (titik tengah) agar tidak menghalangi laser deteksi dari kamera saat menembak objek di depannya.</li>
+        </ul>
+    </div>
+
+    <h2>4. Pemrosesan Logika Input Tiap Frame (Fungsi Update)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">Update</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">HandleRotation</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">HandleMovement</span>();<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="type">Input</span>.<span class="method">GetMouseButtonDown</span>(<span class="number">0</span>) || <span class="type">Input</span>.<span class="method">GetKeyDown</span>(<span class="type">KeyCode</span>.<span class="var">E</span>))<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">TryInteractFromCrosshair</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Mendengar dan memproses respon input pemain secara *real-time*:</p>
+        <ul>
+            <li>Secara konsisten menjalankan fungsi rotasi pandangan dan translasi posisi berjalan.</li>
+            <li><code>Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.E)</code> : Jika mendeteksi tombol Klik Kiri Mouse **atau** tombol 'E' pada keyboard ditekan, skrip akan langsung memicu fungsi pengecekan interaksi objek di arah pandangan mata.</li>
+        </ul>
+    </div>
+
+    <h2>5. Mekanisme Rotasi Kamera First Person (HandleRotation)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">HandleRotation</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">float</span> <span class="var">mouseX</span> = <span class="type">Input</span>.<span class="method">GetAxis</span>(<span class="string">"Mouse X"</span>) * <span class="var">mouseSensitivity</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">float</span> <span class="var">mouseY</span> = <span class="type">Input</span>.<span class="method">GetAxis</span>(<span class="string">"Mouse Y"</span>) * <span class="var">mouseSensitivity</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">rotationX</span> -= <span class="var">mouseY</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">rotationX</span> = <span class="type">Mathf</span>.<span class="method">Clamp</span>(<span class="var">rotationX</span>, <span class="var">upperLookLimit</span>, <span class="var">lowerLookLimit</span>);<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">playerCamera</span>.<span class="var">transform</span>.<span class="var">localRotation</span> = <span class="type">Quaternion</span>.<span class="method">Euler</span>(<span class="var">rotationX</span>, <span class="number">0f</span>, <span class="number">0f</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">transform</span>.<span class="method">Rotate</span>(<span class="type">Vector3</span>.<span class="var">up</span> * <span class="var">mouseX</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Memisahkan kalkulasi sumbu rotasi horizontal dan vertikal:</p>
+        <ul>
+            <li><code>Mathf.Clamp(rotationX, upperLookLimit, lowerLookLimit);</code> : Membatasi nilai derajat rotasi vertikal agar kamera berhenti berputar saat melihat tegak lurus ke langit atau ke tanah.</li>
+            <li><code>Quaternion.Euler(rotationX, 0f, 0f);</code> : Menerapkan rotasi dongakan ke atas-bawah hanya pada komponen internal **Kamera** saja.</li>
+            <li><code>transform.Rotate(Vector3.up * mouseX);</code> : Memutar seluruh **Badan Kapsul Karakter** ke arah kiri-kanan sesuai gerak horizontal mouse.</li>
+        </ul>
+    </div>
+
+    <h2>6. Logika Pergerakan Fisika Karakter (HandleMovement)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">HandleMovement</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">float</span> <span class="var">moveX</span> = <span class="type">Input</span>.<span class="method">GetAxis</span>(<span class="string">"Horizontal"</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">float</span> <span class="var">moveZ</span> = <span class="type">Input</span>.<span class="method">GetAxis</span>(<span class="string">"Vertical"</span>);<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Vector3</span> <span class="var">moveDirection</span> = <span class="var">transform</span>.<span class="var">forward</span> * <span class="var">moveZ</span> + <span class="var">transform</span>.<span class="var">right</span> * <span class="var">moveX</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">moveDirection</span>.<span class="var">magnitude</span> &gt; <span class="number">1f</span>) <span class="var">moveDirection</span>.<span class="method">Normalize</span>();<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">characterController</span>.<span class="method">Move</span>(<span class="var">moveDirection</span> * <span class="var">moveSpeed</span> * <span class="type">Time</span>.<span class="var">deltaTime</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Menerjemahkan input tombol WASD menjadi perpindahan koordinat 3D:</p>
+        <ul>
+            <li><code>transform.forward * moveZ + transform.right * moveX;</code> : Memastikan pergerakan maju-mundur atau menyamping selalu menyesuaikan dengan arah hadap orientasi lokal tubuh karakter saat itu.</li>
+            <li><code>moveDirection.Normalize();</code> : Menormalkan panjang vektor gerak agar kecepatan jalan diagonal (saat menekan tombol W dan A bersamaan) tidak menjadi lebih cepat daripada kecepatan jalan lurus biasa.</li>
+            <li><code>characterController.Move(...)</code> : Memindahkan posisi karakter menggunakan sistem tabrakan CharacterController agar pemain tidak menembus dinding bangunan map.</li>
+        </ul>
+    </div>
+
+    <h2>7. Alur Prioritas Target Interaksi (TryInteractFromCrosshair)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">TryInteractFromCrosshair</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Vector2</span> <span class="var">screenCenter</span> = <span class="keyword">new</span> <span class="type">Vector2</span>(<span class="type">Screen</span>.<span class="var">width</span> / <span class="number">2f</span>, <span class="type">Screen</span>.<span class="var">height</span> / <span class="number">2f</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="method">TryClickUI</span>(<span class="var">screenCenter</span>)) <span class="keyword">return</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="method">TryClickWorldObject</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <ul>
+            <li>Menghitung titik tengah layar berdasarkan resolusi monitor yang digunakan (<code class="inline-code">Screen.width / 2f</code>).</li>
+            <li>Sistem menerapkan urutan prioritas: Pertama-tama mencoba berinteraksi dengan elemen UI Canvas terlebih dahulu (<code class="inline-code">TryClickUI</code>). Jika di titik tengah tersebut tidak ada komponen UI, barulah beralih ke metode kedua untuk mendeteksi komponen objek fisik 3D dunia game (<code class="inline-code">TryClickWorldObject</code>).</li>
+        </ul>
+    </div>
+
+    <h2>8. Deteksi Jarak Klik Kombol UI (TryClickUI)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">bool</span> <span class="method">TryClickUI</span>(<span class="type">Vector2</span> <span class="var">screenPosition</span>)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">PointerEventData</span> <span class="var">pointerData</span> = <span class="keyword">new</span> <span class="type">PointerEventData</span>(<span class="type">EventSystem</span>.<span class="var">current</span>) { <span class="var">position</span> = <span class="var">screenPosition</span> };<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">List</span>&lt;<span class="type">RaycastResult</span>&gt; <span class="var">results</span> = <span class="keyword">new</span> <span class="type">List</span>&lt;<span class="type">RaycastResult</span>&gt;();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">EventSystem</span>.<span class="var">current</span>.<span class="method">RaycastAll</span>(<span class="var">pointerData</span>, <span class="var">results</span>);<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">foreach</span> (<span class="type">RaycastResult</span> <span class="var">result</span> <span class="keyword">in</span> <span class="var">results</span>) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Button</span> <span class="var">button</span> = <span class="var">result</span>.<span class="var">gameObject</span>.<span class="method">GetComponentInParent</span>&lt;<span class="type">Button</span>&gt;();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">button</span> == <span class="keyword">null</span> || !<span class="var">button</span>.<span class="var">interactable</span>) <span class="keyword">continue</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">float</span> <span class="var">distanceToButton</span> = <span class="type">Vector3</span>.<span class="method">Distance</span>(<span class="var">playerCamera</span>.<span class="var">transform</span>.<span class="var">position</span>, <span class="var">button</span>.<span class="var">transform</span>.<span class="var">position</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">distanceToButton</span> &gt; <span class="var">interactDistance</span>) <span class="keyword">continue</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">ExecuteEvents</span>.<span class="method">Execute</span>(<span class="var">button</span>.<span class="var">gameObject</span>, <span class="var">pointerData</span>, <span class="type">ExecuteEvents</span>.<span class="var">pointerClickHandler</span>);<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="keyword">true</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span> <span class="keyword">false</span>;<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Mekanisme penembakan sinar (*raycast*) khusus untuk antarmuka tombol UI:</p>
+        <ul>
+            <li><code>EventSystem.current.RaycastAll(...)</code> : Menembakkan laser dari tengah layar monitor untuk mendeteksi apakah laser tersebut menembus komponen tombol UI game di Canvas.</li>
+            <li><code>Vector3.Distance(...)</code> : Menghitung jarak matematis antara posisi mata kamera pemain dengan posisi tombol UI tersebut di dalam scene ruang 3D.</li>
+            <li><code>if (distanceToButton > interactDistance) continue;</code> : Jika posisi tombol UI berada di tempat yang terlampau jauh (melebihi batas jangkauan), maka perintah klik akan diabaikan demi menjaga aspek realisme.</li>
+            <li><code>ExecuteEvents.Execute(...)</code> : Jika lolos validasi jarak, skrip akan mensimulasikan dan memicu fungsi klik (<code class="inline-code">pointerClickHandler</code>) pada tombol tersebut secara paksa lewat program.</li>
+        </ul>
+    </div>
+
+    <h2>9. Deteksi Tabrakan Fisika Objek 3D (TryClickWorldObject)</h2>
+    <div class="code-block">
+        &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">void</span> <span class="method">TryClickWorldObject</span>()<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Ray</span> <span class="var">ray</span> = <span class="var">playerCamera</span>.<span class="method">ViewportPointToRay</span>(<span class="keyword">new</span> <span class="type">Vector3</span>(<span class="number">0.5f</span>, <span class="number">0.5f</span>, <span class="number">0f</span>));<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="type">Physics</span>.<span class="method">Raycast</span>(<span class="var">ray</span>, <span class="keyword">out</span> <span class="type">RaycastHit</span> <span class="var">hit</span>, <span class="var">interactDistance</span>)) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">hit</span>.<span class="var">collider</span>.<span class="var">gameObject</span> == <span class="keyword">gameObject</span>) <span class="keyword">return</span>;<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="type">Button</span> <span class="var">button</span> = <span class="var">hit</span>.<span class="var">collider</span>.<span class="method">GetComponentInChildren</span>&lt;<span class="type">Button</span>&gt;();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">button</span> == <span class="keyword">null</span>) <span class="var">button</span> = <span class="var">hit</span>.<span class="var">collider</span>.<span class="method">GetComponentInParent</span>&lt;<span class="type">Button</span>&gt;();<br><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span> (<span class="var">button</span> != <span class="keyword">null</span> && <span class="var">button</span>.<span class="var">interactable</span>) {<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="var">button</span>.<span class="var">onClick</span>.<span class="method">Invoke</span>();<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    </div>
+    <div class="explanation">
+        <p>Mekanisme penembakan laser fisik untuk mendeteksi komponen 3D collider di dunia game:</p>
+        <ul>
+            <li><code>ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));</code> : Menciptakan seutas garis lurus khianat (Ray) yang ditembakkan tepat dari lensa kamera mengarah lurus ke depan luar.</li>
+            <li><code>Physics.Raycast(ray, out RaycastHit hit, interactDistance)</code> : Menjalankan fungsi tabrakan sinar fisik Unity. Jika sinar tersebut menabrak suatu komponen Collider dalam batas jarak tertentu, data objek yang tertabrak dikunci ke dalam variabel <code class="inline-code">hit</code>.</li>
+            <li><code>GetComponentInParent<Button>()</code> : Memeriksa apakah objek 3D yang tertabrak tersebut (misal: tombol sakelar darurat atau kartu) mengantongi komponen logika <code class="inline-code">Button</code>.</li>
+            <li><code>button.onClick.Invoke();</code> : Jika komponen tombol interaksi ditemukan pada objek fisik tersebut, sistem akan langsung memanggil fungsi <code>Invoke()</code> untuk mengeksekusi fungsi tujuan (seperti memicu alarm, membuka pintu, atau mengamankan ID Card) secara instan.</li>
+        </ul>
+    </div>
+
+</body>
+</html>
